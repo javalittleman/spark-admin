@@ -2,12 +2,6 @@
   <div class="app-container">
     <div v-show="showStatus" class="filter-container">
       <div class="form-group">
-        <label class="control-label">文章标题:</label>
-        <div class="control-inline">
-          <el-input v-model="listQuery.fileName" placeholder="文件名称" style="width: 200px;" />
-        </div>
-      </div>
-      <div class="form-group">
         <label class="control-label">文件名称:</label>
         <div class="control-inline">
           <el-input v-model="listQuery.fileName" placeholder="文件名称" style="width: 200px;" />
