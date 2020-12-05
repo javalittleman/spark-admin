@@ -4,13 +4,13 @@
       <div class="form-group">
         <label class="control-label">任务名:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.name" placeholder="任务名" style="width: 200px;" />
+          <el-input v-model="listQuery.name" placeholder="任务名" style="width: 170px;" />
         </div>
       </div>
       <div class="form-group">
         <label class="control-label">任务组:</label>
         <div class="control-inline">
-          <el-select v-model="listQuery.jobGroup" placeholder="任务组" clearable style="width: 180px">
+          <el-select v-model="listQuery.jobGroup" placeholder="任务组" clearable style="width: 170px">
             <el-option v-for="item in groupDict" :key="item.value" :label="item.label+'('+item.value+')'" :value="item.value" />
           </el-select>
         </div>
@@ -18,7 +18,7 @@
       <div class="form-group">
         <label class="control-label">任务类型:</label>
         <div class="control-inline">
-          <el-select v-model="listQuery.type" placeholder="任务类型" clearable style="width: 180px">
+          <el-select v-model="listQuery.type" placeholder="任务类型" clearable style="width: 170px">
             <el-option v-for="item in typeDict" :key="item.value" :label="item.label+'('+item.value+')'" :value="item.value" />
           </el-select>
         </div>
@@ -26,7 +26,7 @@
       <div class="form-group">
         <label class="control-label">是否并发:</label>
         <div class="control-inline">
-          <el-select v-model="listQuery.concurrent" placeholder="是否并发" clearable style="width: 180px">
+          <el-select v-model="listQuery.concurrent" placeholder="是否并发" clearable style="width: 170px">
             <el-option v-for="item in typeDict" :key="item.value" :label="item.label+'('+item.value+')'" :value="item.value" />
           </el-select>
         </div>
@@ -34,7 +34,7 @@
       <div class="form-group">
         <label class="control-label">状态:</label>
         <div class="control-inline">
-          <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 180px">
+          <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 170px">
             <el-option v-for="item in typeDict" :key="item.value" :label="item.label+'('+item.value+')'" :value="item.value" />
           </el-select>
         </div>

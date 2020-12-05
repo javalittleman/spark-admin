@@ -70,7 +70,7 @@
               v-if="hasPerm('user:add')"
               class="filter-item"
               style="margin-left: 10px;"
-              type="success"
+              type="primary"
               icon="el-icon-download"
               plain
               @click="exportExcel"

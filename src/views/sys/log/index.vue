@@ -4,19 +4,19 @@
       <div class="form-group">
         <label class="control-label">描述:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.description" placeholder="描述" style="width: 200px;" />
+          <el-input v-model="listQuery.description" placeholder="描述" style="width: 180px;" />
         </div>
       </div>
       <div class="form-group">
         <label class="control-label">访问人:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.creator" placeholder="访问人" style="width: 200px;" />
+          <el-input v-model="listQuery.creator" placeholder="访问人" style="width: 180px;" />
         </div>
       </div>
       <div class="form-group">
         <label class="control-label">请求地址:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.url" placeholder="请求地址" style="width: 200px;" />
+          <el-input v-model="listQuery.url" placeholder="请求地址" style="width: 180px;" />
         </div>
       </div>
       <div class="form-group">
