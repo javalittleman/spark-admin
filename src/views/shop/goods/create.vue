@@ -95,31 +95,86 @@
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="规格库存" name="stock">
-          <el-form-item label="规格">
-            <el-tag
-              v-for="tag in keywords"
-              :key="tag"
-              size="medium"
-              closable
-              type="success"
-              style="margin-left:10px"
-              @close="handleClose(tag)"
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>商品规格</span>
+              <el-button style="float: right;" type="primary" @click="handleSpecsAdd">新增</el-button>
+            </div>
+            <el-table
+              :data="formData.specsTable"
+              border
+              :header-cell-style="{background: '#f8f8f9'}"
+              style="width: 100%"
             >
-              {{ tag }}
-            </el-tag>
-            <el-input
-              v-if="newKeywordVisible"
-              ref="newKeywordInput"
-              v-model="newKeyword"
-              class="input-new-keyword"
-              @keyup.enter.native="handleInputConfirm"
-              @blur="handleInputConfirm"
-            />
-            <el-button v-else class="button-new-keyword" size="small" type="primary" @click="showInput">+ 增加</el-button>
-          </el-form-item>
+              <el-table-column prop="attrName" label="规格名">
+                <template slot-scope="scope">
+                  <el-form-item prop="attrName" label-width="0">
+                    <el-input v-model="scope.row.attrName" placeholder="规格名" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column prop="attrName" label="规格值">
+                <template slot-scope="scope">
+                  <el-form-item prop="attrVal" label-width="0">
+                    <el-input v-model="scope.row.attrVal" placeholder="规格名" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="pic"
+                label="图片"
+              />
+              <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
+                <template slot-scope="{row,$index}">
+                  <el-button type="danger" icon="el-icon-delete" @click="handleSpecsDel(row,$index)" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+          <el-card class="box-card" style="margin-top:10px">
+            <div slot="header" class="clearfix">
+              <span>商品库存</span>
+            </div>
+            <el-table
+              :data="formData.skuTable"
+              border
+              :header-cell-style="{background: '#f8f8f9'}"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="attrName"
+                label="规格属性"
+              />
+              <el-table-column
+                prop="attrVals"
+                label="属性搭配"
+              />
+              <el-table-column label="价格">
+                <template slot-scope="scope">
+                  <el-form-item prop="price" label-width="0">
+                    <el-input v-model="scope.row.price" placeholder="价格" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="库存">
+                <template slot-scope="scope">
+                  <el-form-item prop="stock" label-width="0">
+                    <el-input v-model="scope.row.stock" placeholder="库存" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="商品编码">
+                <template slot-scope="scope">
+                  <el-form-item prop="skuCode" label-width="0">
+                    <el-input v-model="scope.row.skuCode" placeholder="商品编码" />
+                  </el-form-item>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
         </el-tab-pane>
         <el-tab-pane label="商品详情" name="detail">
-          <el-form-item label="商品详细介绍">
+          <el-form-item label-width="0">
             <tinymce ref="editor" v-model="formData.content" :height="400" />
           </el-form-item>
         </el-tab-pane>
@@ -141,13 +196,12 @@ export default {
       unitOptions: getDictList('goods_unit'),
       updateAction: 'https://jsonplaceholder.typicode.com/posts/',
       dialogImgVisible: false,
-      newKeywordVisible: false,
-      newKeyword: '',
       dialogImgUrl: '',
       formData: {
-        attrs: ''
+        attrs: '',
+        specsTable: [{}],
+        skuTable: [{}]
       },
-      keywords: [],
       rules: {}
     }
   },
@@ -156,27 +210,11 @@ export default {
     uploadSpecPicUrl: function(res, file) {
       this.formData.homePic = URL.createObjectURL(file.raw)
     },
-    handleClose(tag) {
-      // 删除可编辑标签
-      this.keywords.splice(this.keywords.indexOf(tag), 1)
-      this.formData.attrs = this.keywords.toString()
+    handleSpecsAdd() {
+      this.formData.specsTable.unshift({})
     },
-    handleInputConfirm() {
-      // 输入key
-      const newKeyword = this.newKeyword
-      if (newKeyword) {
-        this.keywords.push(newKeyword)
-        this.formData.attrs = this.keywords.toString()
-      }
-      this.newKeywordVisible = false
-      this.newKeyword = ''
-    },
-    showInput() {
-      // 显示
-      this.newKeywordVisible = true
-      this.$nextTick((_) => {
-        this.$refs.newKeywordInput.$refs.input.focus()
-      })
+    handleSpecsDel(row, index) {
+      this.formData.specsTable.splice(index, 1)
     }
   }
 }
@@ -210,9 +248,4 @@ export default {
   height: 145px;
   display: block;
 }
-.input-new-keyword {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
 </style>

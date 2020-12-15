@@ -12,18 +12,18 @@
         :on-success="handleSuccess"
         :before-upload="beforeUpload"
         class="editor-slide-upload"
-        action="https://httpbin.org/post"
+        :action="imgUploadUrl"
         list-type="picture-card"
       >
         <el-button size="small" type="primary">
-          Click upload
+          点击上传
         </el-button>
       </el-upload>
       <el-button @click="dialogVisible = false">
-        Cancel
+        取消
       </el-button>
       <el-button type="primary" @click="handleSubmit">
-        Confirm
+        确定
       </el-button>
     </el-dialog>
   </div>
@@ -38,6 +38,16 @@ export default {
     color: {
       type: String,
       default: '#1890ff'
+    },
+    // 添加属性：上传URL
+    imgUploadUrl: {
+      type: String,
+      default: ''
+    },
+    // 添加属性：图片服务器URL
+    imgBaseUrl: {
+      type: String,
+      default: ''
     }
   },
   data() {
