@@ -21,7 +21,6 @@
       </div>
       <el-button
         v-waves
-        size="small"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -83,7 +82,7 @@
 <script>
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as address from '@/api/shop/address.js'
+import * as address from '@/api/shop/user/address.js'
 import { resetData } from '@/utils'
 
 export default {

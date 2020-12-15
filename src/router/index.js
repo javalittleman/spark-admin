@@ -122,6 +122,22 @@ export const constantRouterMap = [{
       meta: { title: '调度日志' }
     }
   ]
+},
+{
+  path: '/shopGoods',
+  component: Layout,
+  hidden: true,
+  children: [
+    {
+      path: '/shop/goods/create',
+      component: () => import('@/views/shop/goods/create'),
+      name: 'WxShopGoodsCreate',
+      meta: {
+        title: '编辑商品',
+        noCache: true
+      }
+    }
+  ]
 }
 ]
 export const notFoundRouter = [{

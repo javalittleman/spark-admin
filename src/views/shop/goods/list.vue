@@ -2,15 +2,15 @@
   <div class="app-container">
     <div v-show="showStatus" class="filter-container">
       <div class="form-group">
-        <label class="control-label">用户编号:</label>
+        <label class="control-label">商品编号:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.userId" placeholder="用户编号" style="width: 200px;" />
+          <el-input v-model="listQuery.goodsSn" placeholder="商品编号" style="width: 200px;" />
         </div>
       </div>
       <div class="form-group">
-        <label class="control-label">商品编号:</label>
+        <label class="control-label">商品标题:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.goodsId" placeholder="收货人" style="width: 200px;" />
+          <el-input v-model="listQuery.title" placeholder="商品标题" style="width: 200px;" />
         </div>
       </div>
       <el-button
@@ -31,7 +31,19 @@
       >重置</el-button>
     </div>
     <div class="table-opts">
-      <div class="table-opts-left" />
+      <div class="table-opts-left">
+        <router-link to="/shop/goods/create">
+          <el-button
+            v-if="hasPerm('shop:goods:add')"
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="success"
+            icon="el-icon-edit"
+            plain
+            @click="handleCreate"
+          >新增</el-button>
+        </router-link>
+      </div>
       <div class="el-button-group table-opts-right">
         <el-button icon="el-icon-search" circle @click="showClick" />
         <el-button icon="el-icon-refresh" circle @click="handleFilter" />
@@ -46,8 +58,11 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="用户编号" prop="userId" />
-      <el-table-column label="商品编号" prop="goodsId" />
+      <el-table-column label="首页图片" prop="homePic" />
+      <el-table-column label="商品编号" prop="goodsSn" />
+      <el-table-column label="商品标题" prop="title" />
+      <el-table-column label="商品分类" prop="categoryIds" />
+      <el-table-column label="商品关键词" prop="keywords" />
       <el-table-column label="创建时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createDate | parseTime }}</span>
@@ -68,11 +83,11 @@
 <script>
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as collect from '@/api/shop/user/collect.js'
+import * as goods from '@/api/shop/goods/goods.js'
 import { resetData } from '@/utils'
 
 export default {
-  name: 'WxShopCollect',
+  name: 'WxShopGoods',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -85,8 +100,8 @@ export default {
       listQuery: {
         current: 1,
         size: 20,
-        nickname: null,
-        wxOpenid: null
+        goodsSn: null,
+        title: null
       }
     }
   },
@@ -96,7 +111,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      collect.page(this.listQuery).then(response => {
+      goods.page(this.listQuery).then(response => {
         this.list = response.data.records
         this.total = response.data.total
         this.listQuery.current = response.data.current

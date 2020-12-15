@@ -21,7 +21,6 @@
       </div>
       <el-button
         v-waves
-        size="small"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -104,7 +103,7 @@
       :limit.sync="listQuery.size"
       @pagination="getList"
     />
-    <el-dialog :title="用户详情" :visible.sync="dialogFormVisible">
+    <el-dialog title="用户详情" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="formData" label-position="right" label-width="100px" style="margin-left:10px;">
         <el-row>
           <el-col :span="8">
@@ -168,10 +167,10 @@
 <script>
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as user from '@/api/shop/user.js'
-import * as address from '@/api/shop/address.js'
-import * as collect from '@/api/shop/collect.js'
-import * as footprint from '@/api/shop/footprint.js'
+import * as user from '@/api/shop/user/user.js'
+import * as address from '@/api/shop/user/address.js'
+import * as collect from '@/api/shop/user/collect.js'
+import * as footprint from '@/api/shop/user/footprint.js'
 import { resetData } from '@/utils'
 
 export default {

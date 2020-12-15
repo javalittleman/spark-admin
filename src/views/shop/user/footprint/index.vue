@@ -15,7 +15,6 @@
       </div>
       <el-button
         v-waves
-        size="small"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -69,7 +68,7 @@
 <script>
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as footprint from '@/api/shop/footprint.js'
+import * as footprint from '@/api/shop/user/footprint.js'
 import { resetData } from '@/utils'
 
 export default {
