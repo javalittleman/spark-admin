@@ -2,15 +2,15 @@
   <div class="app-container">
     <div v-show="showStatus" class="filter-container">
       <div class="form-group">
-        <label class="control-label">用户编号:</label>
-        <div class="control-inline">
-          <el-input v-model="listQuery.userId" placeholder="用户编号" style="width: 200px;" />
-        </div>
-      </div>
-      <div class="form-group">
         <label class="control-label">商品编号:</label>
         <div class="control-inline">
           <el-input v-model="listQuery.goodsSn" placeholder="商品编号" style="width: 200px;" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">会员名:</label>
+        <div class="control-inline">
+          <el-input v-model="listQuery.userName" placeholder="会员名" style="width: 200px;" />
         </div>
       </div>
       <el-button
@@ -46,9 +46,11 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="用户编号" prop="userId" />
-      <el-table-column label="商品编号" prop="goodsSn" />
-      <el-table-column label="商品标题" prop="goodsTitle" />
+      <el-table-column label="商品名称" prop="goodsSn" />
+      <el-table-column label="会员名" prop="userName" />
+      <el-table-column label="内容" prop="content" />
+      <el-table-column label="描述相符" prop="star" />
+      <el-table-column label="图片" prop="pic" />
       <el-table-column label="创建时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createDate | parseTime }}</span>
@@ -69,11 +71,11 @@
 <script>
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as collect from '@/api/shop/user/collect.js'
+import * as commentApi from '@/api/shop/goods/comment.js'
 import { resetData } from '@/utils'
 
 export default {
-  name: 'WxShopCollect',
+  name: 'WxShopGoodsComment',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -86,8 +88,7 @@ export default {
       listQuery: {
         current: 1,
         size: 20,
-        nickname: null,
-        wxOpenid: null
+        goodsTitle: null
       }
     }
   },
@@ -97,7 +98,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      collect.page(this.listQuery).then(response => {
+      commentApi.page(this.listQuery).then(response => {
         this.list = response.data.records
         this.total = response.data.total
         this.listQuery.current = response.data.current

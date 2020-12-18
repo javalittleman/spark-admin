@@ -140,7 +140,7 @@
           </el-tab-pane>
           <el-tab-pane label="我的收藏" name="collect">
             <el-table :data="collTableData" style="width: 100%">
-              <el-table-column label="商品编号" prop="goodsId" />
+              <el-table-column label="商品编号" prop="goodsSn" />
               <el-table-column label="创建时间">
                 <template slot-scope="scope">
                   <span>{{ scope.row.createDate | parseTime }}</span>
@@ -150,7 +150,7 @@
           </el-tab-pane>
           <el-tab-pane label="浏览记录" name="footprint">
             <el-table :data="footTableData" style="width: 100%">
-              <el-table-column label="商品编号" prop="goodsId" />
+              <el-table-column label="商品编号" prop="goodsSn" />
               <el-table-column label="创建时间">
                 <template slot-scope="scope">
                   <span>{{ scope.row.createDate | parseTime }}</span>

@@ -36,7 +36,7 @@
       <el-table-column prop="name" label="名称" />
       <el-table-column prop="pic" label="分类图">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.pic" style="width: 60px; height: 60px" :src="scope.row.pic" :preview-src-list="[scope.row.pic]" />
+          <el-image v-if="scope.row.pic" style="width: 40px; height: 40px" :src="scope.row.pic" :preview-src-list="[scope.row.pic]" />
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" />

@@ -10,7 +10,7 @@
       <div class="form-group">
         <label class="control-label">商品编号:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.goodsId" placeholder="收货人" style="width: 200px;" />
+          <el-input v-model="listQuery.goodsSn" placeholder="商品编号" style="width: 200px;" />
         </div>
       </div>
       <el-button
@@ -47,7 +47,8 @@
       highlight-current-row
     >
       <el-table-column label="用户编号" prop="userId" />
-      <el-table-column label="商品编号" prop="goodsId" />
+      <el-table-column label="商品编号" prop="goodsSn" />
+      <el-table-column label="商品标题" prop="goodsTitle" />
       <el-table-column label="创建时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createDate | parseTime }}</span>

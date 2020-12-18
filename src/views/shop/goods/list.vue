@@ -57,14 +57,19 @@
       fit
       highlight-current-row
     >
+      <el-table-column label="商品编号" prop="goodsSn">
+        <template slot-scope="scope">
+          <div>{{ scope.row.goodsSn }}</div>
+          <div>{{ scope.row.status | dictLabel('goods_status') }}</div>
+        </template>
+      </el-table-column>
       <el-table-column label="首页图片" prop="homePic">
         <template slot-scope="scope">
           <el-image v-if="scope.row.homePic" style="width: 60px; height: 60px" :src="scope.row.homePic" :preview-src-list="[scope.row.homePic]" />
         </template>
       </el-table-column>
-      <el-table-column label="商品编号" prop="goodsSn" />
       <el-table-column label="商品标题" prop="title" show-overflow-tooltip />
-      <el-table-column label="商品分类" prop="categoryIds" />
+      <el-table-column label="商品分类" prop="categoryNames" />
       <el-table-column label="商品关键词" prop="keywords" />
       <el-table-column label="单位">
         <template slot-scope="scope">
@@ -78,24 +83,38 @@
           <div>推广佣金:{{ scope.row.brokeragePrice }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="推荐信息">
+      <el-table-column label="销售信息">
         <template slot-scope="scope">
+          <div>库存：{{ scope.row.stock }}</div>
+          <div>销量：{{ scope.row.saleNum }}</div>
           <div>新品：{{ scope.row.isNew | dictLabel('yes_no') }}</div>
           <div>人气推荐:{{ scope.row.isHot | dictLabel('yes_no') }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="创建信息">
+      <el-table-column label="操作信息" width="140">
         <template slot-scope="scope">
-          <div>{{ scope.row.creator }}</div>
+          <div>创建:{{ scope.row.creator }}</div>
           <div>{{ scope.row.createDate | parseTime }}</div>
+          <div>上架:{{ scope.row.publisher }}</div>
+          <div>{{ scope.row.publishTime | parseTime }}</div>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <router-link :to="{path:'/shop/goods/create/',query:{id:row.id}}">
+          <router-link :to="{path:'/shop/goods/create',query:{id:row.id}}">
             <el-button v-if="hasPerm('shop:goods:edit')" size="mini" type="text" icon="el-icon-edit">编辑</el-button>
           </router-link>
           <el-button v-if="hasPerm('shop:goods:del')" type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
+          <el-dropdown>
+            <span class="el-dropdown-link" style="font-size: 12px;">
+              <i class="el-icon-arrow-down el-icon--right" />更多
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item icon="el-icon-sell">上架</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-sold-out">下架</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-chat-round">评论</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="btn-header">
-      <el-button v-loading="confirmLoading" style="margin-left: 10px;" icon="el-icon-check" type="warning" @click="saveGoods">保存</el-button>
-      <el-button v-loading="confirmLoading" type="success" icon="el-icon-shopping-bag-1" @click="saveGoods">提交</el-button>
+      <el-button v-loading="confirmLoading" style="margin-left: 10px;" icon="el-icon-check" type="warning" @click="saveGoods('0')">保存</el-button>
+      <el-button v-loading="confirmLoading" type="success" icon="el-icon-shopping-bag-1" @click="saveGoods('1')">上架</el-button>
     </div>
     <div class="app-container">
       <el-form
@@ -14,7 +14,7 @@
         label-width="200px"
         style="margin-left: 10px"
       >
-        <el-tabs v-model="activeName">
+        <el-tabs v-model="activeName" v-loading="infoLoading">
           <el-tab-pane label="基本信息" name="info">
             <el-form-item label="商品编号" prop="goodsSn">
               <el-input v-model="formData.goodsSn" style="max-width: 800px" />
@@ -22,7 +22,7 @@
             <el-form-item label="商品标题" prop="title">
               <el-input
                 v-model="formData.title"
-                maxlength="128"
+                maxlength="64"
                 style="max-width: 800px"
                 show-word-limit
               />
@@ -101,6 +101,35 @@
               >
                 <template slot="append">￥</template>
               </el-input>
+            </el-form-item>
+            <el-form-item label="产品参数">
+              <el-button type="primary" @click="handleParamsAdd">新增</el-button>
+              <el-table
+                :data="formData.shopGoodsParams"
+                border
+                :header-cell-style="{background: '#f8f8f9'}"
+                style="width: 600px;margin-top:10px"
+              >
+                <el-table-column label="参数名">
+                  <template slot-scope="scope">
+                    <el-form-item :prop="'shopGoodsParams.' + scope.$index + '.paramName'" :rules="rules.paramName" label-width="0">
+                      <el-input v-model="scope.row.paramName" placeholder="参数名" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+                <el-table-column label="参数值">
+                  <template slot-scope="scope">
+                    <el-form-item :prop="'shopGoodsParams.' + scope.$index + '.paramValue'" :rules="rules.paramValue" label-width="0">
+                      <el-input v-model="scope.row.paramValue" placeholder="参数值" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
+                  <template slot-scope="{row,$index}">
+                    <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleParamsDel(row,$index)" />
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="价格与库存" name="stock">
@@ -250,6 +279,7 @@ export default {
       activeName: 'info',
       updateAction: process.env.VUE_APP_BASE_API + '/wxshop/file/upload',
       confirmLoading: false,
+      infoLoading: false,
       dialogImgVisible: false,
       dialogImgUrl: '',
       specsOptions: [],
@@ -266,11 +296,14 @@ export default {
       attrValPicIndex: 0,
       formData: {
         categoryNames: null,
+        status: null,
         keywordsArg: [],
         categoryIdsArg: [],
         specsArg: [],
         shopGoodsAttrs: [],
-        shopGoodsSkus: []
+        shopGoodsSkus: [],
+        shopGoodsParams: [],
+        delParamIds: []
       },
       rules: {
         goodsSn: [{ required: true, message: '请输入商品编号', trigger: 'change' }],
@@ -283,7 +316,9 @@ export default {
         specsArg: [{ required: true, message: '请选择规格', trigger: 'change' }],
         detail: [{ required: true, message: '请填写商品详情', trigger: 'change' }],
         price: [{ required: true, message: '请输入价格', trigger: 'change' }],
-        stock: [{ required: true, message: '请输入库存', trigger: 'change' }]
+        stock: [{ required: true, message: '请输入库存', trigger: 'change' }],
+        paramName: [{ required: true, message: '请输入参数名', trigger: 'change' }],
+        paramValue: [{ required: true, message: '请输入参数值', trigger: 'change' }]
       }
     }
   },
@@ -309,8 +344,11 @@ export default {
       })
     },
     fetchData(id) {
+      this.infoLoading = true
       goodsApi.get(id).then(response => {
+        this.infoLoading = false
         this.formData = Object.assign({}, response.data)
+        this.formData.delParamIds = []
         // 处理checkbox 选中问题
         this.formData.specsArg.forEach(a => {
           setTimeout(() => {
@@ -430,10 +468,21 @@ export default {
         return res
       })
     },
-    saveGoods() {
+    handleParamsAdd() {
+      // 产品属性添加
+      this.formData.shopGoodsParams.push({})
+    },
+    handleParamsDel(row, index) {
+      if (row.id) {
+        this.formData.delParamIds.push(row.id)
+      }
+      this.formData.shopGoodsParams.splice(index, 1)
+    },
+    saveGoods(status) {
       // 保存商品信息
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.formData.status = status
           this.confirmLoading = true
           this.formData.categoryNames = this.$refs.categoryIdRef.getCheckedNodes(false)[0].pathLabels.join(',')
           goodsApi.save(this.formData).then(() => {
