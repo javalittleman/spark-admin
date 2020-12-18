@@ -86,7 +86,7 @@ export const constantRouterMap = [{
       name: 'CreateArticle',
       meta: {
         title: '创建文章',
-        noCache: true
+        noCache: false
       }
     },
     {
@@ -134,7 +134,7 @@ export const constantRouterMap = [{
       name: 'WxShopGoodsCreate',
       meta: {
         title: '编辑商品',
-        noCache: true
+        noCache: false
       }
     }
   ]

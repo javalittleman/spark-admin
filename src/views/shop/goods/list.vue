@@ -40,7 +40,6 @@
             type="success"
             icon="el-icon-edit"
             plain
-            @click="handleCreate"
           >新增</el-button>
         </router-link>
       </div>
@@ -58,14 +57,45 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="首页图片" prop="homePic" />
+      <el-table-column label="首页图片" prop="homePic">
+        <template slot-scope="scope">
+          <el-image v-if="scope.row.homePic" style="width: 60px; height: 60px" :src="scope.row.homePic" :preview-src-list="[scope.row.homePic]" />
+        </template>
+      </el-table-column>
       <el-table-column label="商品编号" prop="goodsSn" />
-      <el-table-column label="商品标题" prop="title" />
+      <el-table-column label="商品标题" prop="title" show-overflow-tooltip />
       <el-table-column label="商品分类" prop="categoryIds" />
       <el-table-column label="商品关键词" prop="keywords" />
-      <el-table-column label="创建时间">
+      <el-table-column label="单位">
         <template slot-scope="scope">
-          <span>{{ scope.row.createDate | parseTime }}</span>
+          <span>{{ scope.row.unit | dictLabel('goods_unit') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="价格信息">
+        <template slot-scope="scope">
+          <div>零售价格：{{ scope.row.retailPrice }}</div>
+          <div>批发价格:{{ scope.row.wholesalePrice }}</div>
+          <div>推广佣金:{{ scope.row.brokeragePrice }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="推荐信息">
+        <template slot-scope="scope">
+          <div>新品：{{ scope.row.isNew | dictLabel('yes_no') }}</div>
+          <div>人气推荐:{{ scope.row.isHot | dictLabel('yes_no') }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建信息">
+        <template slot-scope="scope">
+          <div>{{ scope.row.creator }}</div>
+          <div>{{ scope.row.createDate | parseTime }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
+        <template slot-scope="{row}">
+          <router-link :to="{path:'/shop/goods/create/',query:{id:row.id}}">
+            <el-button v-if="hasPerm('shop:goods:edit')" size="mini" type="text" icon="el-icon-edit">编辑</el-button>
+          </router-link>
+          <el-button v-if="hasPerm('shop:goods:del')" type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -44,7 +44,12 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    const msg = error.response.data.error_description ? error.response.data.error_description : error.response.data.msg
+    let msg = '请求失败，请联系管理员!'
+    if (error.response.data.error_description) {
+      msg = error.response.data.error_description
+    } else if (error.response.data.msg) {
+      msg = error.response.data.msg
+    }
     Message.error(msg)
     return Promise.reject(error)
   }
