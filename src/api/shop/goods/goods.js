@@ -22,3 +22,10 @@ export function get(id) {
     method: 'get'
   })
 }
+
+export function updateStatus(op, id) {
+  return request({
+    url: `/wxshop/goods/${op}/${id}`,
+    method: 'patch'
+  })
+}

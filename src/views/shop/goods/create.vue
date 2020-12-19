@@ -75,6 +75,19 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item>
+            <el-form-item label="主图：">
+              <el-upload
+                :action="updateAction"
+                list-type="picture-card"
+                multiple
+                :file-list="galleries"
+                :on-exceed="uploadGalleryExceed"
+                :limit="6"
+                :on-success="uploadGallerySuccess"
+              >
+                <i class="el-icon-plus" />
+              </el-upload>
+            </el-form-item>
             <el-form-item label="是否新品" prop="isNew">
               <el-switch v-model="formData.isNew" active-value="1" inactive-value="0" />
             </el-form-item>
@@ -89,14 +102,6 @@
             <el-form-item label="批发价格" prop="wholesalePrice">
               <el-input
                 v-model="formData.wholesalePrice"
-                style="max-width: 300px"
-              >
-                <template slot="append">￥</template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="推广佣金" prop="brokeragePrice">
-              <el-input
-                v-model="formData.brokeragePrice"
                 style="max-width: 300px"
               >
                 <template slot="append">￥</template>
@@ -235,7 +240,7 @@
           </el-tab-pane>
           <el-tab-pane label="详细描述" name="detail">
             <el-form-item label-width="0" prop="detail">
-              <tinymce ref="editor" v-model="formData.detail" :height="400" />
+              <tinymce ref="editor" v-model="formData.detail" :img-upload-url="updateAction" :height="600" />
             </el-form-item>
           </el-tab-pane>
         </el-tabs>
@@ -294,12 +299,14 @@ export default {
       attrPicUrl: '',
       attrPicIndex: 0,
       attrValPicIndex: 0,
+      galleries: [],
       formData: {
         categoryNames: null,
         status: null,
         keywordsArg: [],
         categoryIdsArg: [],
         specsArg: [],
+        shopGoodsGalleries: [],
         shopGoodsAttrs: [],
         shopGoodsSkus: [],
         shopGoodsParams: [],
@@ -325,8 +332,8 @@ export default {
   created() {
     this.treeCategoryFun()
     this.listSpecsFun()
-    if (this.$route.query && this.$route.query.id) {
-      const id = this.$route.query.id
+    if (this.$route.params && this.$route.params.id) {
+      const id = this.$route.params.id
       this.fetchData(id)
     }
   },
@@ -346,38 +353,45 @@ export default {
     fetchData(id) {
       this.infoLoading = true
       goodsApi.get(id).then(response => {
-        this.infoLoading = false
         this.formData = Object.assign({}, response.data)
         this.formData.delParamIds = []
+        if (this.formData.shopGoodsGalleries) {
+          this.formData.shopGoodsGalleries.forEach(g => {
+            this.galleries.push({ url: g.url })
+          })
+        }
         // 处理checkbox 选中问题
         this.formData.specsArg.forEach(a => {
           setTimeout(() => {
             this.handleSpeChange(a)
-          }, 500)
+          }, 100)
         })
+        this.infoLoading = false
       })
     },
     handleSpeChange(val) {
+      if (val.length !== 0) {
       // 选择规格后
-      var selVal = val[val.length - 1]
-      const speIndex = this.specsList.findIndex((v) => v.attrId === val)
-      if (speIndex === -1) {
-        specs.get(selVal).then(response => {
-          var attr = Object.assign({}, response.data)
-          this.specsList.push(attr)
-          const attrIndex = this.formData.shopGoodsAttrs.findIndex((v) => v.attrId === attr.attrId)
-          if (attrIndex === -1) {
-            this.formData.shopGoodsAttrs.push(
-              { attrId: attr.attrId, attrName: attr.attrName, attrValList: [], attrChecks: [] })
-          } else if (attrIndex > -1 && attr.attrType === 'check_box') {
+        var selVal = val[val.length - 1]
+        const speIndex = this.specsList.findIndex((v) => v.attrId === val)
+        if (speIndex === -1) {
+          specs.get(selVal).then(response => {
+            var attr = Object.assign({}, response.data)
+            this.specsList.push(attr)
+            const attrIndex = this.formData.shopGoodsAttrs.findIndex((v) => v.attrId === attr.attrId)
+            if (attrIndex === -1) {
+              this.formData.shopGoodsAttrs.push(
+                { attrId: attr.attrId, attrName: attr.attrName, attrValList: [], attrChecks: [] })
+            } else if (attrIndex > -1 && attr.attrType === 'check_box') {
             // 处理check_box 选中问题
-            var attrChecks = []
-            this.formData.shopGoodsAttrs[attrIndex].attrValList.forEach(a => {
-              attrChecks.push(a.attrValId)
-            })
-            this.$set(this.formData.shopGoodsAttrs[attrIndex], 'attrChecks', attrChecks)
-          }
-        })
+              var attrChecks = []
+              this.formData.shopGoodsAttrs[attrIndex].attrValList.forEach(a => {
+                attrChecks.push(a.attrValId)
+              })
+              this.$set(this.formData.shopGoodsAttrs[attrIndex], 'attrChecks', attrChecks)
+            }
+          })
+        }
       }
     },
     handleSpeRemoveTag(val) {
@@ -411,6 +425,18 @@ export default {
     uploadHomePicUrl(res, file) {
       this.$set(this.formData, 'homePic', res.data)
     },
+    uploadGallerySuccess(res, file) {
+      this.formData.shopGoodsGalleries = this.formData.shopGoodsGalleries || []
+      this.formData.shopGoodsGalleries.push({ name: file.name, url: res.data })
+    },
+    uploadGalleryExceed(files, fileList) {
+      if (fileList.length >= 6) {
+        this.$notify.error({
+          title: '错误',
+          message: `只允许上传6张主图`
+        })
+      }
+    },
     openAttrValDialog(index, valIndex) {
       // 打开属性文件上传
       this.dialogImgVisible = true
@@ -439,8 +465,9 @@ export default {
       this.formData.shopGoodsSkus = []
       if (array.length === 1) {
         // 如果只有一个属性
-        var attrValId = array[0][0]
-        this.formData.shopGoodsSkus.push({ attrValIds: attrValId, attrVals: attrValsMap.get(attrValId) })
+        array[0].forEach(a => {
+          this.formData.shopGoodsSkus.push({ attrValIds: a, attrVals: attrValsMap.get(a) })
+        })
       } else {
       // 获取笛卡尔积之后的数据
         const deca = this.calcDescartes(array)
@@ -499,6 +526,11 @@ export default {
             this.$router.go(-1)
           }).catch(() => {
             this.confirmLoading = false
+          })
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: `页面有必填项，请填写必填项！`
           })
         }
       })

@@ -133,6 +133,15 @@ export const constantRouterMap = [{
       component: () => import('@/views/shop/goods/create'),
       name: 'WxShopGoodsCreate',
       meta: {
+        title: '新增商品',
+        noCache: false
+      }
+    },
+    {
+      path: '/shop/goods/edit/:id(\\d+)',
+      component: () => import('@/views/shop/goods/create'),
+      name: 'WxShopGoodsCreate',
+      meta: {
         title: '编辑商品',
         noCache: false
       }

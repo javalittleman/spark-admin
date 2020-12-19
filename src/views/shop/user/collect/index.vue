@@ -86,8 +86,8 @@ export default {
       listQuery: {
         current: 1,
         size: 20,
-        nickname: null,
-        wxOpenid: null
+        userId: null,
+        goodsSn: null
       }
     }
   },

@@ -62,7 +62,7 @@
       <el-table-column label="昵称" prop="nickname" />
       <el-table-column label="性别" prop="gender">
         <template slot-scope="scope">
-          <span>{{ scope.row.userType | dictLabel('sex') }}</span>
+          <span>{{ scope.row.gender | dictLabel('sex') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="手机号" prop="mobile" />
@@ -138,6 +138,14 @@
               <el-table-column label="具体收货地址" prop="address" />
             </el-table>
           </el-tab-pane>
+          <el-tab-pane label="购物车" name="cart">
+            <el-table :data="cartTableData" style="width: 100%">
+              <el-table-column label="商品编号" prop="goodsSn" />
+              <el-table-column label="商品标题" prop="goodsTitle" show-overflow-tooltip />
+              <el-table-column label="规格" prop="attrVals" />
+              <el-table-column label="数量" prop="num" />
+            </el-table>
+          </el-tab-pane>
           <el-tab-pane label="我的收藏" name="collect">
             <el-table :data="collTableData" style="width: 100%">
               <el-table-column label="商品编号" prop="goodsSn" />
@@ -169,6 +177,7 @@ import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import * as user from '@/api/shop/user/user.js'
 import * as address from '@/api/shop/user/address.js'
+import * as cart from '@/api/shop/user/cart.js'
 import * as collect from '@/api/shop/user/collect.js'
 import * as footprint from '@/api/shop/user/footprint.js'
 import { resetData } from '@/utils'
@@ -187,9 +196,10 @@ export default {
       formData: {
         avatar: ''
       },
-      addTableData: null,
-      collTableData: null,
-      footTableData: null,
+      addTableData: [],
+      cartTableData: [],
+      collTableData: [],
+      footTableData: [],
       activeName: 'address',
       createTimeArray: [],
       listQuery: {
@@ -231,6 +241,10 @@ export default {
       // 查询用户地址
       address.page({ userId: row.id }).then(response => {
         this.addTableData = response.data.records
+      })
+      // 查询购物车
+      cart.page({ userId: row.id }).then(response => {
+        this.cartTableData = response.data.records
       })
       // 查询收藏
       collect.page({ userId: row.id }).then(response => {

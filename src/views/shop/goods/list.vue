@@ -60,7 +60,11 @@
       <el-table-column label="商品编号" prop="goodsSn">
         <template slot-scope="scope">
           <div>{{ scope.row.goodsSn }}</div>
-          <div>{{ scope.row.status | dictLabel('goods_status') }}</div>
+          <div>
+            <el-tag :type="scope.row.status | statusFilter">
+              {{ scope.row.status | dictLabel('goods_status') }}
+            </el-tag>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="首页图片" prop="homePic">
@@ -80,7 +84,7 @@
         <template slot-scope="scope">
           <div>零售价格：{{ scope.row.retailPrice }}</div>
           <div>批发价格:{{ scope.row.wholesalePrice }}</div>
-          <div>推广佣金:{{ scope.row.brokeragePrice }}</div>
+          <div>价格:{{ scope.row.minPrice }} <span v-if="scope.row.maxPrice !== 0"> ~ {{ scope.row.maxPrice }}</span></div>
         </template>
       </el-table-column>
       <el-table-column label="销售信息">
@@ -101,17 +105,17 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <router-link :to="{path:'/shop/goods/create',query:{id:row.id}}">
+          <router-link :to="'/shop/goods/edit/'+row.id">
             <el-button v-if="hasPerm('shop:goods:edit')" size="mini" type="text" icon="el-icon-edit">编辑</el-button>
           </router-link>
           <el-button v-if="hasPerm('shop:goods:del')" type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
-          <el-dropdown>
+          <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link" style="font-size: 12px;">
               <i class="el-icon-arrow-down el-icon--right" />更多
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-sell">上架</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-sold-out">下架</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-sell" :command="beforeHandleCommand(row,'publish')">上架</el-dropdown-item>
+              <el-dropdown-item v-if="row.status === '1'" icon="el-icon-sold-out" :command="beforeHandleCommand(row,'off')">下架</el-dropdown-item>
               <el-dropdown-item icon="el-icon-chat-round">评论</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -139,6 +143,16 @@ export default {
   name: 'WxShopGoods',
   components: { Pagination },
   directives: { waves },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        '0': 'info',
+        '1': 'success',
+        '2': 'danger'
+      }
+      return statusMap[status]
+    }
+  },
   data() {
     return {
       list: null,
@@ -178,6 +192,32 @@ export default {
     handleFilter() {
       this.listQuery.current = 1
       this.getList()
+    },
+    beforeHandleCommand(row, command) {
+      return {
+        'row': row,
+        'command': command
+      }
+    },
+    handleCommand(command) {
+      this.handleModifyStatus(command.row, command.command)
+    },
+    handleModifyStatus(row, status) {
+      this.$confirm('是否确认此操作?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        goods.updateStatus(status, row.id).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '操作成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        })
+      })
     }
   }
 }
