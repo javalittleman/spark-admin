@@ -82,6 +82,7 @@
                 multiple
                 :file-list="galleries"
                 :on-exceed="uploadGalleryExceed"
+                :on-remove="uploadGalleryRemove"
                 :limit="6"
                 :on-success="uploadGallerySuccess"
               >
@@ -360,11 +361,18 @@ export default {
             this.galleries.push({ url: g.url })
           })
         }
-        // 处理checkbox 选中问题
-        this.formData.specsArg.forEach(a => {
-          setTimeout(() => {
-            this.handleSpeChange(a)
-          }, 100)
+        // 属性值回显
+        specs.getArray(this.formData.specs).then(response => {
+          this.specsList = response.data
+          this.specsList.forEach((s, i) => {
+            if (s.attrType === 'check_box') {
+              var attrChecks = []
+              this.formData.shopGoodsAttrs[i].attrValList.forEach(a => {
+                attrChecks.push(a.attrValId)
+              })
+              this.$set(this.formData.shopGoodsAttrs[i], 'attrChecks', attrChecks)
+            }
+          })
         })
         this.infoLoading = false
       })
@@ -436,6 +444,10 @@ export default {
           message: `只允许上传6张主图`
         })
       }
+    },
+    uploadGalleryRemove(files, fileList) {
+      const index = this.formData.shopGoodsGalleries.findIndex((v) => v.url === files.url)
+      this.formData.shopGoodsGalleries.splice(index, 1)
     },
     openAttrValDialog(index, valIndex) {
       // 打开属性文件上传

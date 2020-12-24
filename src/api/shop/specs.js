@@ -29,3 +29,11 @@ export function get(id) {
     method: 'get'
   })
 }
+
+export function getArray(ids) {
+  return request({
+    url: `/wxshop/specs/array/${ids}`,
+    method: 'get'
+  })
+}
+
