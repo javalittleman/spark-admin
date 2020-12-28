@@ -3,7 +3,7 @@
     <el-timeline>
       <el-timeline-item v-for="(item,index) of LogTimeline" :key="index" :timestamp="item.loginTime | parseTime" placement="top">
         <el-card>
-          <p><i class="el-icon-monitor" />  {{ item.system }}</p>
+          <p><i class="el-icon-monitor" />  {{ item.osType }}</p>
           <p><i class="el-icon-mouse" />  {{ item.browser }}</p>
           <p><i class="el-icon-price-tag" /> {{ item.locationIp }}</p>
           <p><i class="el-icon-map-location" /> {{ item.location }}</p>
