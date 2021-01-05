@@ -469,8 +469,8 @@ export default {
       this.formData.shopGoodsAttrs.forEach(a => {
         const items = []
         a.attrValList.forEach(b => {
-          items.push(b.attrValId)
-          attrValsMap.set(b.attrValId, b.attrVal)
+          items.push(b.attrId + ':' + b.attrValId)
+          attrValsMap.set(b.attrId + ':' + b.attrValId, b.attrVal)
         })
         array.push(items)
       })

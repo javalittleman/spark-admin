@@ -117,7 +117,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item v-show="temp.iFrame.toString() === 'false' && temp.type.toString() === '1'" label="组件路径" prop="component">
-              <el-input v-model="temp.component" placeholder="目录：Layout 其他 sys/user/index" />
+              <el-input v-model="temp.component" placeholder="目录:Layout 二级菜单:ParentView 其他 sys/user/index" />
             </el-form-item>
           </el-col>
         </el-row>
