@@ -29,3 +29,10 @@ export function updateStatus(op, id) {
     method: 'patch'
   })
 }
+
+export function getSkus(id) {
+  return request({
+    url: `/wxshop/goods/sku/${id}`,
+    method: 'get'
+  })
+}

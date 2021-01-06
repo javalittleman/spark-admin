@@ -237,6 +237,7 @@ export default {
       this.getList()
     },
     handleCreate() {
+      resetData(this.formData)
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {

@@ -39,7 +39,11 @@
       border
       @current-change="handleCurrentChange"
     >
-      <el-table-column label="商品编号" prop="goodsSn" />
+      <el-table-column label="商品编号" prop="goodsSn">
+        <template slot-scope="scope">
+          <span>{{ scope.row.goodsSn }} <el-tag type="success">[{{ scope.row.activity | dictLabel('goods_activity') }}]</el-tag></span>
+        </template>
+      </el-table-column>
       <el-table-column label="首页图片" prop="homePic">
         <template slot-scope="scope">
           <el-image v-if="scope.row.homePic" style="width: 60px; height: 60px" :src="scope.row.homePic" :preview-src-list="[scope.row.homePic]" />

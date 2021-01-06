@@ -59,7 +59,7 @@
     >
       <el-table-column label="商品编号" prop="goodsSn">
         <template slot-scope="scope">
-          <div>{{ scope.row.goodsSn }}</div>
+          <div>{{ scope.row.goodsSn }} <el-tag type="success">[{{ scope.row.activity | dictLabel('goods_activity') }}]</el-tag></div>
           <div>
             <el-tag :type="scope.row.status | statusFilter">
               {{ scope.row.status | dictLabel('goods_status') }}

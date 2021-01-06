@@ -211,10 +211,8 @@
                 :header-cell-style="{background: '#f8f8f9'}"
                 style="width: 100%"
               >
-                <el-table-column
-                  prop="attrVals"
-                  label="属性搭配"
-                />
+                <el-table-column prop="attrVals" label="属性搭配" />
+                <el-table-column prop="attrValIds" label="属性搭配ID" />
                 <el-table-column label="价格">
                   <template slot-scope="scope">
                     <el-form-item :prop="'shopGoodsSkus.' + scope.$index + '.price'" :rules="rules.price" label-width="0">
@@ -304,6 +302,7 @@ export default {
       formData: {
         categoryNames: null,
         status: null,
+        activity: 0,
         keywordsArg: [],
         categoryIdsArg: [],
         specsArg: [],
@@ -519,6 +518,15 @@ export default {
     },
     saveGoods(status) {
       // 保存商品信息
+      if (this.formData.activity !== '0') {
+        this.$notify({
+          title: '校验信息',
+          message: '当前产品在活动中，不允许编辑！',
+          type: 'error',
+          duration: 2000
+        })
+        return
+      }
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.formData.status = status

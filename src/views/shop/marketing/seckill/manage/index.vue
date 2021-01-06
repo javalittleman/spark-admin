@@ -51,10 +51,19 @@
       highlight-current-row
     >
       <el-table-column label="秒杀名称" prop="name" />
-      <el-table-column label="时间" prop="startTime" />
-      <el-table-column label="图片" prop="image" />
+      <el-table-column label="开始时间" prop="startTime" />
+      <el-table-column label="结束时间" prop="endTime" />
+      <el-table-column label="图片" prop="image">
+        <template slot-scope="scope">
+          <el-image v-if="scope.row.image" style="width: 40px; height: 40px" :src="scope.row.image" :preview-src-list="[scope.row.image]" />
+        </template>
+      </el-table-column>
       <el-table-column label="排序" prop="sort" />
-      <el-table-column label="状态" prop="status" />
+      <el-table-column label="状态" prop="status">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949" @change="updateStatus(scope.row)" />
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
@@ -211,6 +220,7 @@ export default {
       this.$set(this.formData, 'image', res.data)
     },
     handleCreate() {
+      resetData(this.formData)
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -224,6 +234,20 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+    },
+    updateStatus(row) {
+      const updateData = { id: row.id, status: row.status }
+      seckill.saveOrUpdate(updateData)
+        .then(response => {
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+          const index = this.list.findIndex(v => v.id === row.id)
+          this.list.splice(index, 1, row)
+        })
     },
     saveOrUpdate() {
       // 新增Or编辑
