@@ -2,15 +2,35 @@
   <div class="app-container">
     <div v-show="showStatus" class="filter-container">
       <div class="form-group">
-        <label class="control-label">用户编号:</label>
+        <label class="control-label">主键:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.userId" placeholder="用户编号" style="width: 200px;" />
+          <el-input v-model="listQuery.id" placeholder="主键" style="width: 200px;" />
         </div>
       </div>
       <div class="form-group">
-        <label class="control-label">订单编号:</label>
+        <label class="control-label">用户ID:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.orderSn" placeholder="订单编号" style="width: 200px;" />
+          <el-input v-model="listQuery.userId" placeholder="用户ID" style="width: 200px;" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">商品ID:</label>
+        <div class="control-inline">
+          <el-input v-model="listQuery.goodsId" placeholder="商品ID" style="width: 200px;" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">商品标题:</label>
+        <div class="control-inline">
+          <el-input v-model="listQuery.goodsTitle" placeholder="商品标题" style="width: 200px;" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">状态:</label>
+        <div class="control-inline">
+          <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 160px">
+            <el-option v-for="item in statusOptions" :key="item.value" :label="item.label+'('+item.value+')'" :value="item.value" />
+          </el-select>
         </div>
       </div>
       <el-button
@@ -44,39 +64,31 @@
       :header-cell-style="{background: '#f8f8f9'}"
       border
       fit
-      highlight-current-row
     >
-      <el-table-column label="订单编号" prop="orderSn">
+      <el-table-column label="编号" prop="id" />
+      <el-table-column label="订单IDs" prop="orderIds" />
+      <el-table-column label="用户编号" prop="userId" />
+      <el-table-column label="商品ID" prop="goodsId" />
+      <el-table-column label="商品名称" prop="goodsTitle" />
+      <el-table-column label="几人团" prop="people" />
+      <el-table-column label="几人参加" prop="countPeople" />
+      <el-table-column label="开始时间">
         <template slot-scope="scope">
-          <div>{{ scope.row.orderSn }}【<el-tag type="warning">{{ scope.row.orderType | dictLabel('goods_activity') }}</el-tag>】</div>
-          <div>订单状态：<el-tag type="success">{{ scope.row.orderStatus | dictLabel('order_status') }}</el-tag></div>
-          <div>发货状态:<el-tag type="success">{{ scope.row.shippingStatus | dictLabel('shipping_status') }}</el-tag></div>
-          <div v-if="scope.row.refundStatus">退货状态:<el-tag type="success">{{ scope.row.refundStatus | dictLabel('refund_status') }}</el-tag></div>
+          <span>{{ scope.row.startTime | parseTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="买家" prop="nickname" />
-      <el-table-column label="订单信息">
+      <el-table-column label="结束时间">
         <template slot-scope="scope">
-          <div>下单时间：{{ scope.row.createDate | parseTime }} </div>
-          <div>支付时间：{{ scope.row.payTime | parseTime }} </div>
-          <div>收货时间：{{ scope.row.confirmTime | parseTime }} </div>
+          <span>{{ scope.row.endTime | parseTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="订单商品">
+      <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-row v-for="goods in scope.row.goodsList" :key="goods.id">
-            <el-col :span="8">
-              <el-image style="width: 50px; height: 50px" :src="goods.picUrl" fit="fit" />
-            </el-col>
-            <el-col :span="14">
-              <div>{{ goods.goodsTitle }}</div>
-              <div>{{ goods.goodsAttrVals }} 数量: {{ goods.number }}</div>
-            </el-col>
-          </el-row>
+          <el-tag :type="scope.row.status | statusFilter">
+            {{ scope.row.status | dictLabel('shop_pink_status') }}
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="订单总价" prop="orderPrice" />
-      <el-table-column label="支付时间" prop="payTime" />
     </el-table>
 
     <pagination
@@ -92,25 +104,40 @@
 <script>
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as order from '@/api/shop/order/order.js'
+import * as pink from '@/api/shop/marketing/pink.js'
 import { resetData } from '@/utils'
+import { getDictList } from '@/utils/dict'
 
 export default {
-  name: 'WxShopCart',
+  name: 'WxShopPinkUser',
   components: { Pagination },
   directives: { waves },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        '0': 'info',
+        '1': 'warning',
+        '2': 'success',
+        '3': 'danger'
+      }
+      return statusMap[status]
+    }
+  },
   data() {
     return {
       list: null,
       total: 0,
       listLoading: true,
       showStatus: true,
-      createTimeArray: [],
+      statusOptions: getDictList('shop_pink_status'),
       listQuery: {
         current: 1,
         size: 20,
-        goodsSn: null,
-        orderSn: null
+        id: null,
+        userId: null,
+        goodsId: null,
+        goodsTitle: null,
+        status: null
       }
     }
   },
@@ -120,7 +147,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      order.page(this.listQuery).then(response => {
+      pink.page(this.listQuery).then(response => {
         this.list = response.data.records
         this.total = response.data.total
         this.listQuery.current = response.data.current
