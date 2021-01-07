@@ -7,6 +7,18 @@
           <el-input v-model="listQuery.goodsTitle" placeholder="商品名称" style="width: 200px;" />
         </div>
       </div>
+      <div class="form-group">
+        <label class="control-label">开始时间:</label>
+        <div class="control-inline">
+          <el-date-picker v-model="listQuery.startTime" type="datetime" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">结束时间:</label>
+        <div class="control-inline">
+          <el-date-picker v-model="listQuery.endTime" type="datetime" />
+        </div>
+      </div>
       <el-button
         v-waves
         class="filter-item"
@@ -207,7 +219,9 @@ export default {
       listQuery: {
         current: 1,
         size: 20,
-        status: null
+        goodsTitle: null,
+        startTime: null,
+        endTime: null
       },
       formData: {
         id: null,

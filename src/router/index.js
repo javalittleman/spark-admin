@@ -147,6 +147,22 @@ export const constantRouterMap = [{
       }
     }
   ]
+},
+{
+  path: '/order',
+  component: Layout,
+  hidden: true,
+  children: [
+    {
+      path: '/order/detail/:id(\\d+)',
+      component: () => import('@/views/shop/order/order-detail'),
+      name: 'WxShopOrderDetail',
+      meta: {
+        title: '订单详情',
+        noCache: false
+      }
+    }
+  ]
 }
 ]
 export const notFoundRouter = [{

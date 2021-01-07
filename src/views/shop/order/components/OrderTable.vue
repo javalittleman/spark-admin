@@ -1,6 +1,14 @@
 <template>
   <div class="app-container">
-    <div v-show="showStatus" class="filter-container">
+    <div class="filter-container">
+      <div class="form-group">
+        <label class="control-label">订单状态:</label>
+        <div class="control-inline">
+          <el-select v-model="listQuery.orderStatus" placeholder="订单状态" style="width: 160px">
+            <el-option v-for="item in statusOptions" :key="Number(item.value)" :label="item.label+'('+item.value+')'" :value="Number(item.value)" />
+          </el-select>
+        </div>
+      </div>
       <div class="form-group">
         <label class="control-label">用户编号:</label>
         <div class="control-inline">
@@ -11,6 +19,18 @@
         <label class="control-label">订单编号:</label>
         <div class="control-inline">
           <el-input v-model="listQuery.orderSn" placeholder="订单编号" style="width: 200px;" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">下单时间:</label>
+        <div class="control-inline">
+          <el-date-picker v-model="listQuery.createDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">支付时间:</label>
+        <div class="control-inline">
+          <el-date-picker v-model="listQuery.payTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
         </div>
       </div>
       <el-button
@@ -30,13 +50,6 @@
         @click="reset"
       >重置</el-button>
     </div>
-    <div class="table-opts">
-      <div class="table-opts-left" />
-      <div class="el-button-group table-opts-right">
-        <el-button icon="el-icon-search" circle @click="showClick" />
-        <el-button icon="el-icon-refresh" circle @click="handleFilter" />
-      </div>
-    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -44,17 +57,16 @@
       :header-cell-style="{background: '#f8f8f9'}"
       border
       fit
-      highlight-current-row
     >
-      <el-table-column label="订单编号" prop="orderSn">
+      <el-table-column label="订单编号">
         <template slot-scope="scope">
-          <div>{{ scope.row.orderSn }}【<el-tag type="warning">{{ scope.row.orderType | dictLabel('goods_activity') }}</el-tag>】</div>
+          <div>{{ scope.row.orderSn }}</div>
           <div>订单状态：<el-tag type="success">{{ scope.row.orderStatus | dictLabel('order_status') }}</el-tag></div>
           <div>发货状态:<el-tag type="success">{{ scope.row.shippingStatus | dictLabel('shipping_status') }}</el-tag></div>
           <div v-if="scope.row.refundStatus">退货状态:<el-tag type="success">{{ scope.row.refundStatus | dictLabel('refund_status') }}</el-tag></div>
         </template>
       </el-table-column>
-      <el-table-column label="买家" prop="nickname" />
+      <el-table-column label="买家" prop="user.nickname" />
       <el-table-column label="订单信息">
         <template slot-scope="scope">
           <div>下单时间：{{ scope.row.createDate | parseTime }} </div>
@@ -62,7 +74,7 @@
           <div>收货时间：{{ scope.row.confirmTime | parseTime }} </div>
         </template>
       </el-table-column>
-      <el-table-column label="订单商品">
+      <el-table-column label="商品信息">
         <template slot-scope="scope">
           <el-row v-for="goods in scope.row.goodsList" :key="goods.id">
             <el-col :span="8">
@@ -75,8 +87,26 @@
           </el-row>
         </template>
       </el-table-column>
-      <el-table-column label="订单总价" prop="orderPrice" />
-      <el-table-column label="支付时间" prop="payTime" />
+      <el-table-column label="总价">
+        <template slot-scope="scope">
+          <div>订单总价：{{ scope.row.orderPrice }} </div>
+          <div>商品总价：{{ scope.row.goodsPrice }} </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注">
+        <template slot-scope="scope">
+          <div>用户备注：{{ scope.row.userRemarks }} </div>
+          <div>订单备注：{{ scope.row.remarks }} </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <router-link :to="'/order/detail/'+row.id">
+            <el-button type="text" size="mini" icon="el-icon-tickets" @click="handleInfo(row)">查看</el-button>
+          </router-link>
+          <el-button type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDel(row,$index)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -94,22 +124,29 @@ import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import * as order from '@/api/shop/order/order.js'
 import { resetData } from '@/utils'
+import { getDictList } from '@/utils/dict'
 
 export default {
-  name: 'WxShopCart',
+  name: 'WxShopOrderTable',
   components: { Pagination },
   directives: { waves },
+  props: {
+    orderType: {
+      required: true,
+      type: String
+    }
+  },
   data() {
     return {
       list: null,
       total: 0,
       listLoading: true,
-      showStatus: true,
-      createTimeArray: [],
+      statusOptions: getDictList('order_status'),
       listQuery: {
         current: 1,
         size: 20,
-        goodsSn: null,
+        orderType: this.orderType,
+        orderStatus: 0,
         orderSn: null
       }
     }
@@ -127,10 +164,6 @@ export default {
         this.listQuery.size = response.data.size
         this.listLoading = false
       })
-    },
-    showClick() {
-      // 控制查询条件显示隐藏
-      this.showStatus = !this.showStatus
     },
     reset() {
       resetData(this.listQuery, { current: 1, size: 20 })
