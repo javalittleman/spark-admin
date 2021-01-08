@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
     <order-table order-type="0" />
   </div>
 </template>

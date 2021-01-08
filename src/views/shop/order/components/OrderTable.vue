@@ -1,6 +1,7 @@
 <template>
-  <div class="app-container">
+  <div>
     <div class="filter-container">
+      <cards :lg="4" :card-lists="cardLists" @handleClick="handleClick" />
       <div class="form-group">
         <label class="control-label">订单状态:</label>
         <div class="control-inline">
@@ -120,15 +121,16 @@
 </template>
 
 <script>
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import waves from '@/directive/waves'
+import Pagination from '@/components/Pagination'
+import Cards from '@/components/Cards'
 import * as order from '@/api/shop/order/order.js'
 import { resetData } from '@/utils'
 import { getDictList } from '@/utils/dict'
 
 export default {
   name: 'WxShopOrderTable',
-  components: { Pagination },
+  components: { Pagination, Cards },
   directives: { waves },
   props: {
     orderType: {
@@ -145,10 +147,47 @@ export default {
       listQuery: {
         current: 1,
         size: 20,
-        orderType: this.orderType,
         orderStatus: 0,
         orderSn: null
-      }
+      },
+      cardLists: [
+        {
+          id: 1,
+          icon: 'order-today',
+          text: '今日订单',
+          num: 1
+        },
+        {
+          id: 2,
+          icon: 'payment-clock',
+          text: '待付款',
+          num: 2
+        },
+        {
+          id: 3,
+          icon: 'send',
+          text: '已发货',
+          num: 3
+        },
+        {
+          id: 1,
+          icon: 'order-cancel',
+          text: '取消订单',
+          num: 4
+        },
+        {
+          id: 5,
+          icon: 'order-refund',
+          text: '退款',
+          num: 5
+        },
+        {
+          id: 7,
+          icon: 'order-evaluation',
+          text: '待评价',
+          num: 7
+        }
+      ]
     }
   },
   created() {
@@ -157,6 +196,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
+      this.listQuery['orderType'] = this.orderType
       order.page(this.listQuery).then(response => {
         this.list = response.data.records
         this.total = response.data.total
@@ -171,6 +211,10 @@ export default {
     handleFilter() {
       this.listQuery.current = 1
       this.getList()
+    },
+    handleClick(val) {
+      this.listQuery.orderStatus = val
+      this.handleFilter()
     }
   }
 }

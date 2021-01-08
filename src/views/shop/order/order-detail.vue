@@ -1,6 +1,17 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card" style="margin-top:20px">
+    <el-card class="box-card" style="margin-top:10px">
+      <div slot="header" class="clearfix">
+        <span><el-tag type="warning">[{{ formData.orderType | dictLabel('goods_activity') }}]</el-tag> 的订单状态 </span>
+      </div>
+      <el-steps :active="2" finish-status="success" process-status="info" :align-center="true">
+        <el-step title="买家下单" :description="formData.createDate | parseTime" />
+        <el-step title="买家付款" :description="formData.payTime | parseTime" />
+        <el-step title="卖家发货" :description="formData.sendTime | parseTime" />
+        <el-step title="交易完成" :description="formData.completeTime | parseTime" />
+      </el-steps>
+    </el-card>
+    <el-card class="box-card" style="margin-top:10px">
       <div slot="header" class="clearfix">
         <span>物流信息</span>
       </div>
@@ -20,7 +31,7 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-card class="box-card" style="margin-top:20px">
+    <el-card class="box-card" style="margin-top:10px">
       <div slot="header" class="clearfix">
         <span>订单详情</span>
       </div>
@@ -61,10 +72,21 @@
         <el-table-column prop="totalAmount" label="商品总额" width="160" />
       </el-table>
     </el-card>
-    <el-card class="box-card" style="margin-top:20px">
+    <el-card class="box-card" style="margin-top:10px">
       <div slot="header" class="clearfix">
         <span>资金信息</span>
       </div>
+      <h4>订单金额</h4>
+      <el-table :data="amountData" style="width: 100%" :header-cell-style="{background: '#f8f8f9'}">
+        <el-table-column prop="goodsPrice" label="商品总价" />
+        <el-table-column prop="orderPrice" label="订单总价" />
+        <el-table-column prop="shippingFee" label="运费" />
+        <el-table-column prop="freightPrice" label="配送费用" />
+        <el-table-column prop="couponPrice" label="优惠券价格" />
+        <el-table-column prop="actualPrice" label="实际支付的金额" />
+      </el-table>
+      <h4>支付信息</h4>
+      <p>{{ formData.payName }}</p>
     </el-card>
   </div>
 </template>
@@ -77,9 +99,15 @@ export default {
   name: 'WxShopOrderDetail',
   data() {
     return {
+      stepsActive: 1,
+      completeData: '',
       formData: {
+        user: {
+          nickname: ''
+        },
         goodsList: []
-      }
+      },
+      amountData: []
     }
   },
   created() {
@@ -90,10 +118,35 @@ export default {
   },
   methods: {
     fetchData(id) {
+      const loading = this.$loading({
+        lock: true,
+        text: '加载中....',
+        spinner: 'el-icon-loading',
+        target: document.querySelector('.app-container')
+      })
       order.get(id).then(response => {
         this.formData = Object.assign({}, response.data)
+        // 拼接订单金额表格
+        const { goodsPrice, orderPrice, couponPrice, actualPrice, shippingFee, freightPrice } = this.formData
+        this.amountData.push({
+          goodsPrice: goodsPrice,
+          orderPrice: orderPrice,
+          couponPrice: couponPrice,
+          actualPrice: actualPrice,
+          shippingFee: shippingFee,
+          freightPrice: freightPrice
+        })
+        loading.close()
+      }).catch(() => {
+        loading.close()
       })
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+p{
+  font-size: 13px;
+}
+</style>
