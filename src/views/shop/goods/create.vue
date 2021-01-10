@@ -302,7 +302,7 @@ export default {
       formData: {
         categoryNames: null,
         status: null,
-        activity: 0,
+        activity: '0',
         keywordsArg: [],
         categoryIdsArg: [],
         specsArg: [],
