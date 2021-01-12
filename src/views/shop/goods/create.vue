@@ -16,9 +16,9 @@
       >
         <el-tabs v-model="activeName" v-loading="infoLoading">
           <el-tab-pane label="基本信息" name="info">
-            <el-form-item label="商品编号" prop="goodsSn">
+            <!-- <el-form-item label="商品编号" prop="goodsSn">
               <el-input v-model="formData.goodsSn" style="max-width: 800px" />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="商品标题" prop="title">
               <el-input
                 v-model="formData.title"
@@ -302,7 +302,7 @@ export default {
       formData: {
         categoryNames: null,
         status: null,
-        activity: 0,
+        activity: '0',
         keywordsArg: [],
         categoryIdsArg: [],
         specsArg: [],
@@ -313,7 +313,7 @@ export default {
         delParamIds: []
       },
       rules: {
-        goodsSn: [{ required: true, message: '请输入商品编号', trigger: 'change' }],
+        // goodsSn: [{ required: true, message: '请输入商品编号', trigger: 'change' }],
         title: [{ required: true, message: '请输入标题', trigger: 'change' }],
         keywordsArg: [{ required: true, message: '请输入关键词', trigger: 'change' }],
         brief: [{ required: true, message: '请输入简介', trigger: 'change' }],

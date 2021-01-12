@@ -36,3 +36,10 @@ export function getSkus(id) {
     method: 'get'
   })
 }
+
+export function del(id) {
+  return request({
+    url: `/wxshop/goods/${id}`,
+    method: 'delete'
+  })
+}

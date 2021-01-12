@@ -22,3 +22,26 @@ export function get(id) {
     method: 'get'
   })
 }
+
+export function send(params) {
+  return request({
+    url: '/wxshop/order/send',
+    method: 'put',
+    params
+  })
+}
+
+export function cancel(id) {
+  return request({
+    url: `/wxshop/order/${id}/cancel`,
+    method: 'put'
+  })
+}
+
+export function count(orderType) {
+  return request({
+    url: '/wxshop/order/count',
+    method: 'get',
+    params: { orderType }
+  })
+}

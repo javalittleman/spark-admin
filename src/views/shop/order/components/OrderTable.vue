@@ -61,10 +61,10 @@
     >
       <el-table-column label="订单编号">
         <template slot-scope="scope">
-          <div>{{ scope.row.orderSn }}</div>
+          <div><router-link :to="'/order/detail/'+scope.row.id" class="link-type">{{ scope.row.orderSn }}</router-link></div>
           <div>订单状态：<el-tag type="success">{{ scope.row.orderStatus | dictLabel('order_status') }}</el-tag></div>
           <div>发货状态:<el-tag type="success">{{ scope.row.shippingStatus | dictLabel('shipping_status') }}</el-tag></div>
-          <div v-if="scope.row.refundStatus">退货状态:<el-tag type="success">{{ scope.row.refundStatus | dictLabel('refund_status') }}</el-tag></div>
+          <div v-if="scope.row.hasOwnProperty('refundStatus')">退货状态:<el-tag type="success">{{ scope.row.refundStatus | dictLabel('refund_status') }}</el-tag></div>
         </template>
       </el-table-column>
       <el-table-column label="买家" prop="user.nickname" />
@@ -82,6 +82,7 @@
               <el-image style="width: 50px; height: 50px" :src="goods.picUrl" fit="fit" />
             </el-col>
             <el-col :span="14">
+              <div>ID：{{ goods.id }}</div>
               <div>{{ goods.goodsTitle }}</div>
               <div>{{ goods.goodsAttrVals }} 数量: {{ goods.number }}</div>
             </el-col>
@@ -101,11 +102,9 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <router-link :to="'/order/detail/'+row.id">
-            <el-button type="text" size="mini" icon="el-icon-tickets" @click="handleInfo(row)">查看</el-button>
-          </router-link>
-          <el-button type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDel(row,$index)">删除</el-button>
+        <template slot-scope="{row}">
+          <el-button v-if="row.orderStatus === 0 || row.orderStatus === 1" type="text" size="mini" icon="el-icon-tickets" @click="handleCancel(row)">取消</el-button>
+          <el-button v-if="row.orderStatus === 2" type="text" size="mini" icon="el-icon-truck" @click="handleSend(row)">发货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -117,6 +116,31 @@
       :limit.sync="listQuery.size"
       @pagination="getList"
     />
+    <el-dialog title="物流信息" :visible.sync="dialogSendVisible" width="400px">
+      <el-form ref="dataForm" label-position="right" label-width="90px" label-suffix=":" style="margin-left:10px;">
+        <el-form-item label="物流公司" prop="shipperName">
+          <el-select v-model="sendData.shipperCode" placeholder="物流公司" style="width:100%" @change="handleSel">
+            <el-option
+              v-for="item in shipperOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="快递单号" prop="shipperCode">
+          <el-input v-model="sendData.logisticCode" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogSendVisible = false">
+          取消
+        </el-button>
+        <el-button :loading="confirmLoading" type="primary" @click="sendExpress">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -143,25 +167,34 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      dialogSendVisible: false,
+      confirmLoading: false,
       statusOptions: getDictList('order_status'),
+      shipperOptions: getDictList('express_company'),
       listQuery: {
         current: 1,
         size: 20,
         orderStatus: 0,
         orderSn: null
       },
+      sendData: {
+        id: null,
+        shipperName: null,
+        shipperCode: null,
+        logisticCode: null
+      },
       cardLists: [
         {
-          id: 1,
-          icon: 'order-today',
-          text: '今日订单',
-          num: 1
-        },
-        {
-          id: 2,
+          id: 0,
           icon: 'payment-clock',
           text: '待付款',
           num: 2
+        },
+        {
+          id: 2,
+          icon: 'order-today',
+          text: '已付款',
+          num: 1
         },
         {
           id: 3,
@@ -176,7 +209,7 @@ export default {
           num: 4
         },
         {
-          id: 5,
+          id: 4,
           icon: 'order-refund',
           text: '退款',
           num: 5
@@ -185,15 +218,24 @@ export default {
           id: 7,
           icon: 'order-evaluation',
           text: '待评价',
-          num: 7
+          num: 6
         }
       ]
     }
   },
   created() {
+    this.statusCount()
     this.getList()
   },
   methods: {
+    statusCount() {
+      order.count(this.orderType).then(response => {
+        const map = response.data
+        this.cardLists.forEach(e => {
+          e.num = map[e.id] || 0
+        })
+      })
+    },
     getList() {
       this.listLoading = true
       this.listQuery['orderType'] = this.orderType
@@ -215,6 +257,39 @@ export default {
     handleClick(val) {
       this.listQuery.orderStatus = val
       this.handleFilter()
+    },
+    handleCancel(row) {
+      this.$confirm('是否取消订单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        order.cancel(row.id).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '取消订单成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.handleFilter()
+        })
+      })
+    },
+    handleSend(row) {
+      this.sendData.id = row.id
+      this.dialogSendVisible = true
+    },
+    handleSel(val) {
+      const shipper = this.shipperOptions.find(e => e.value === val)
+      this.sendData.shipperName = shipper.label
+    },
+    sendExpress() {
+      this.confirmLoading = true
+      order.send(this.sendData).then(response => {
+        this.confirmLoading = false
+        this.dialogSendVisible = false
+        this.handleFilter()
+      })
     }
   }
 }

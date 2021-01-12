@@ -79,20 +79,20 @@
         width="140"
         class-name="small-padding fixed-width"
       >
-        <template slot-scope="{row,$index}">
+        <template slot-scope="{row}">
           <el-button
             type="text"
             size="mini"
             icon="el-icon-edit"
             @click="handleUpdate(row)"
           >编辑</el-button>
-          <el-button
+          <!-- <el-button
             type="text"
             size="mini"
             style="color:red"
             icon="el-icon-delete"
             @click="handleModifyStatus(row,$index)"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>

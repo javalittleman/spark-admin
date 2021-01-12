@@ -8,9 +8,9 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="control-label">商品编号:</label>
+        <label class="control-label">商品ID:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.goodsSn" placeholder="商品编号" style="width: 200px;" />
+          <el-input v-model="listQuery.goodsId" style="width: 200px;" />
         </div>
       </div>
       <el-button
@@ -47,8 +47,19 @@
       highlight-current-row
     >
       <el-table-column label="用户编号" prop="userId" />
-      <el-table-column label="商品编号" prop="goodsSn" />
-      <el-table-column label="商品标题" prop="goodsTitle" show-overflow-tooltip />
+      <el-table-column label="商品信息">
+        <template slot-scope="scope">
+          <el-row>
+            <el-col :span="8">
+              <el-image style="width: 50px; height: 50px" :src="scope.row.homePic" fit="fit" />
+            </el-col>
+            <el-col :span="14">
+              <div>{{ scope.row.goodsId }}</div>
+              <div>{{ scope.row.goodsTitle }}</div>
+            </el-col>
+          </el-row>
+        </template>
+      </el-table-column>
       <el-table-column label="规格" prop="attrVals" />
       <el-table-column label="数量" prop="num" />
       <el-table-column label="创建时间">
@@ -88,7 +99,7 @@ export default {
       listQuery: {
         current: 1,
         size: 20,
-        goodsSn: null,
+        goodsId: null,
         userId: null
       }
     }

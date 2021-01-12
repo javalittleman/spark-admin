@@ -4,7 +4,7 @@
       <div slot="header" class="clearfix">
         <span><el-tag type="warning">[{{ formData.orderType | dictLabel('goods_activity') }}]</el-tag> 的订单状态 </span>
       </div>
-      <el-steps :active="2" finish-status="success" process-status="info" :align-center="true">
+      <el-steps :active="stepsActive" finish-status="success" process-status="info" :align-center="true">
         <el-step title="买家下单" :description="formData.createDate | parseTime" />
         <el-step title="买家付款" :description="formData.payTime | parseTime" />
         <el-step title="卖家发货" :description="formData.sendTime | parseTime" />
@@ -136,6 +136,13 @@ export default {
           shippingFee: shippingFee,
           freightPrice: freightPrice
         })
+        if (this.formData.orderStatus < 2) {
+          this.stepsActive = 1
+        } else if (this.formData.orderStatus > 3) {
+          this.stepsActive = 4
+        } else {
+          this.stepsActive = this.formData.orderStatus
+        }
         loading.close()
       }).catch(() => {
         loading.close()

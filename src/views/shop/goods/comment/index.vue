@@ -46,7 +46,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="商品名称" prop="goodsSn" />
+      <el-table-column label="商品Id" prop="goodsId" />
       <el-table-column label="会员名" prop="userName" />
       <el-table-column label="内容" prop="content" />
       <el-table-column label="描述相符" prop="star">

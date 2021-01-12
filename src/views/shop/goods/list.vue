@@ -2,9 +2,9 @@
   <div class="app-container">
     <div v-show="showStatus" class="filter-container">
       <div class="form-group">
-        <label class="control-label">商品编号:</label>
+        <label class="control-label">商品ID:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.goodsSn" placeholder="商品编号" style="width: 200px;" />
+          <el-input v-model="listQuery.id" placeholder="商品ID" style="width: 200px;" />
         </div>
       </div>
       <div class="form-group">
@@ -57,9 +57,10 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="商品编号" prop="goodsSn">
+      <el-table-column label="商品编号" prop="id">
         <template slot-scope="scope">
-          <div>{{ scope.row.goodsSn }} <el-tag type="success">[{{ scope.row.activity | dictLabel('goods_activity') }}]</el-tag></div>
+          <div>{{ scope.row.id }}</div>
+          <div><el-tag type="success">[{{ scope.row.activity | dictLabel('goods_activity') }}]</el-tag></div>
           <div>
             <el-tag :type="scope.row.status | statusFilter">
               {{ scope.row.status | dictLabel('goods_status') }}
@@ -104,11 +105,11 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
+        <template slot-scope="{row,$index}">
           <router-link :to="'/shop/goods/edit/'+row.id">
             <el-button v-if="hasPerm('shop:goods:edit')" size="mini" type="text" icon="el-icon-edit">编辑</el-button>
           </router-link>
-          <el-button v-if="hasPerm('shop:goods:del')" type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
+          <el-button v-if="hasPerm('shop:goods:del')" type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDelete(row,$index)">删除</el-button>
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link" style="font-size: 12px;">
               <i class="el-icon-arrow-down el-icon--right" />更多
@@ -216,6 +217,23 @@ export default {
             duration: 2000
           })
           this.getList()
+        })
+      })
+    },
+    handleDelete(row, index) {
+      this.$confirm('是否删除数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        goods.del(row.id).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
         })
       })
     }

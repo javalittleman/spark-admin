@@ -8,9 +8,9 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="control-label">商品编号:</label>
+        <label class="control-label">商品ID:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.goodsSn" placeholder="商品编号" style="width: 200px;" />
+          <el-input v-model="listQuery.goodsId" placeholder="商品编号" style="width: 200px;" />
         </div>
       </div>
       <el-button
@@ -47,8 +47,14 @@
       highlight-current-row
     >
       <el-table-column label="用户编号" prop="userId" />
-      <el-table-column label="商品编号" prop="goodsSn" />
-      <el-table-column label="商品标题" prop="goodsTitle" />
+      <el-table-column label="商品ID" prop="goodsId" />
+      <el-table-column label="商品图片" prop="homePic">
+        <template slot-scope="scope">
+          <el-image v-if="scope.row.homePic" style="width: 30px; height: 30px" :src="scope.row.homePic" :preview-src-list="[scope.row.homePic]" />
+        </template>
+      </el-table-column>
+      <el-table-column label="商品名称" prop="goodsTitle" />
+      <el-table-column label="价格" prop="price" />
       <el-table-column label="创建时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createDate | parseTime }}</span>
@@ -82,12 +88,11 @@ export default {
       total: 0,
       listLoading: true,
       showStatus: true,
-      createTimeArray: [],
       listQuery: {
         current: 1,
         size: 20,
         userId: null,
-        goodsSn: null
+        goodsId: null
       }
     }
   },

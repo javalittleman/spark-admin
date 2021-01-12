@@ -58,8 +58,16 @@
       </el-table-column>
       <el-table-column label="面额" prop="denomination" />
       <el-table-column label="固定面额" prop="fixedDenomination" />
-      <el-table-column label="开始时间" prop="startTime" />
-      <el-table-column label="结束时间" prop="endTime" />
+      <el-table-column label="开始时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.startTime | parseTime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="开始时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.endTime | parseTime }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="发放总数" prop="total" />
       <el-table-column label="剩余总量" prop="lastTotal" />
       <el-table-column label="状态" prop="status">
