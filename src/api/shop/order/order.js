@@ -45,3 +45,10 @@ export function count(orderType) {
     params: { orderType }
   })
 }
+
+export function trace(id) {
+  return request({
+    url: `/wxshop/order/express/trace/${id}`,
+    method: 'get'
+  })
+}

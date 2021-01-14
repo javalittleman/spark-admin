@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="btn-header">
-      <el-button v-loading="confirmLoading" style="margin-left: 10px;" icon="el-icon-check" type="warning" @click="saveGoods('0')">保存</el-button>
-      <el-button v-loading="confirmLoading" type="success" icon="el-icon-shopping-bag-1" @click="saveGoods('1')">上架</el-button>
+      <el-button v-waves v-loading="confirmLoading" style="margin-left: 10px;" icon="el-icon-check" type="warning" @click="saveGoods('0')">保存</el-button>
+      <el-button v-waves v-loading="confirmLoading" type="success" icon="el-icon-shopping-bag-1" @click="saveGoods('1')">上架</el-button>
     </div>
     <div class="app-container">
       <el-form
@@ -269,6 +269,7 @@
 </template>
 
 <script>
+import waves from '@/directive/waves'
 import * as specs from '@/api/shop/specs.js'
 import { getDictList } from '@/utils/dict'
 import * as categoryApi from '@/api/shop/category.js'
@@ -278,6 +279,7 @@ import Tinymce from '@/components/Tinymce'
 export default {
   name: 'WxShopGoodsCreate',
   components: { Tinymce },
+  directives: { waves },
   data() {
     return {
       activeName: 'info',

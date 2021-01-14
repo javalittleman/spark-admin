@@ -23,10 +23,20 @@
         </el-table-column>
         <el-table-column prop="shipperName" label="物流公司" />
         <el-table-column prop="logisticCode" label="快递单号" />
-        <el-table-column prop="isFinish" label="是否完成" />
+        <el-table-column prop="traces" label="物流状态" />
+        <el-table-column prop="isFinish" label="是否完成">
+          <template slot-scope="scope">
+            <el-tag type="success">{{ scope.row.isFinish ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="更新时间">
           <template slot-scope="scope">
             <span>{{ scope.row.modifyDate | parseTime }} </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="{row}">
+            <el-button type="text" size="mini" icon="el-icon-tickets" @click="findTraces(row)">物流轨迹</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -88,6 +98,17 @@
       <h4>支付信息</h4>
       <p>{{ formData.payName }}</p>
     </el-card>
+    <el-dialog title="物流轨迹信息" :visible.sync="dialogVisible">
+      <el-timeline :reverse="false">
+        <el-timeline-item
+          v-for="(activity, index) in activities"
+          :key="index"
+          :timestamp="activity.uploadTime"
+        >
+          {{ activity.content }}
+        </el-timeline-item>
+      </el-timeline>
+    </el-dialog>
   </div>
 </template>
 
@@ -101,6 +122,8 @@ export default {
     return {
       stepsActive: 1,
       completeData: '',
+      dialogVisible: false,
+      activities: [],
       formData: {
         user: {
           nickname: ''
@@ -146,6 +169,13 @@ export default {
         loading.close()
       }).catch(() => {
         loading.close()
+      })
+    },
+    findTraces(row) {
+      // 物流轨迹信息
+      order.trace(row.id).then(response => {
+        this.activities = response.data
+        this.dialogVisible = true
       })
     }
   }
