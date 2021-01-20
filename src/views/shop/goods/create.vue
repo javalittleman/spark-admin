@@ -283,7 +283,7 @@ export default {
   data() {
     return {
       activeName: 'info',
-      updateAction: process.env.VUE_APP_BASE_API + '/wxshop/file/upload',
+      updateAction: process.env.VUE_APP_BASE_API + '/file/api/upload?bucketName=shop&filePath=goods',
       confirmLoading: false,
       infoLoading: false,
       dialogImgVisible: false,

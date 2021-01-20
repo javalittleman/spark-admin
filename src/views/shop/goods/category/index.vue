@@ -105,7 +105,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { resetData } from '@/utils'
 
 export default {
-  name: 'Dept',
+  name: 'WxShopCategory',
   directives: { waves },
   components: { Treeselect },
   data() {
@@ -115,7 +115,7 @@ export default {
       listQuery: {
         name: null
       },
-      updateAction: process.env.VUE_APP_BASE_API + '/wxshop/file/upload',
+      updateAction: process.env.VUE_APP_BASE_API + '/file/api/upload?bucketName=shop&filePath=category',
       tableData: [],
       expandText: '展开全部',
       isShowTable: false,

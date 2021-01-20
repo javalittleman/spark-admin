@@ -155,7 +155,7 @@ export default {
       showStatus: true,
       dialogFormVisible: false,
       confirmLoading: false,
-      updateAction: process.env.VUE_APP_BASE_API + '/wxshop/file/upload',
+      updateAction: process.env.VUE_APP_BASE_API + '/file/api/upload?bucketName=shop&filePath=seckill',
       textMap: {
         update: '编辑',
         create: '创建'

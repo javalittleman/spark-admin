@@ -174,7 +174,7 @@ export default {
       dialogFormVisible: false,
       dialogGoodsVisible: false,
       confirmLoading: false,
-      updateAction: process.env.VUE_APP_BASE_API + '/wxshop/file/upload',
+      updateAction: process.env.VUE_APP_BASE_API + '/file/api/upload?bucketName=shop&filePath=swiper',
       typeOptions: getDictList('swiper_type'),
       statusOptions: getDictList('status'),
       textMap: {
@@ -248,6 +248,7 @@ export default {
       this.dialogGoodsVisible = false
     },
     handleCreate() {
+      resetData(this.formData)
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
