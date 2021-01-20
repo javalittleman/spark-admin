@@ -62,6 +62,7 @@
       </el-table-column>
       <el-table-column label="规格" prop="attrVals" />
       <el-table-column label="数量" prop="num" />
+      <el-table-column label="价格" prop="price" />
       <el-table-column label="创建时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createDate | parseTime }}</span>

@@ -79,7 +79,7 @@
       <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
-          <el-button type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDel(row,$index)">删除</el-button>
+          <el-button type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDelete(row,$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -326,6 +326,23 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleDelete(row, index) {
+      this.$confirm('是否删除数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        pinkGoods.del(row.id).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        })
       })
     },
     saveOrUpdate() {

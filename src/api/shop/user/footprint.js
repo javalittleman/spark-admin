@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function page(params) {
   return request({
-    url: '/wxshop/user/collect/page',
+    url: '/wxshop/user/footprint/page',
     method: 'get',
     params
   })

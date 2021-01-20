@@ -4,7 +4,7 @@
       <div class="form-group">
         <label class="control-label">用户编号:</label>
         <div class="control-inline">
-          <el-input v-model="listQuery.userId" placeholder="用户编号" style="width: 200px;" />
+          <el-input v-model="listQuery.userId" style="width: 200px;" />
         </div>
       </div>
       <div class="form-group">

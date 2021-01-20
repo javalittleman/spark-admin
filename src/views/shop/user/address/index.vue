@@ -59,7 +59,7 @@
       <el-table-column label="具体收货地址" prop="address" />
       <el-table-column label="默认地址">
         <template slot-scope="scope">
-          <span>{{ scope.row.isDefault | dictLabel('yes_no') }}</span>
+          <el-tag :type="scope.row.isDefault ? 'success': 'danger'"> {{ scope.row.isDefault ? '是': '否' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="创建时间">
