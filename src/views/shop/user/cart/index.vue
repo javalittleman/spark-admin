@@ -50,10 +50,10 @@
       <el-table-column label="商品信息">
         <template slot-scope="scope">
           <el-row>
-            <el-col :span="8">
-              <el-image style="width: 50px; height: 50px" :src="scope.row.homePic" fit="fit" />
+            <el-col :span="6">
+              <el-image style="width: 40px; height: 40px" :src="scope.row.homePic" fit="fit" />
             </el-col>
-            <el-col :span="14">
+            <el-col :span="18">
               <div>{{ scope.row.goodsId }}</div>
               <div>{{ scope.row.goodsTitle }}</div>
             </el-col>

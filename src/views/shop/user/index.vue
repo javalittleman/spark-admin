@@ -140,7 +140,7 @@
           </el-tab-pane>
           <el-tab-pane label="购物车" name="cart">
             <el-table :data="cartTableData" style="width: 100%">
-              <el-table-column label="商品编号" prop="goodsSn" />
+              <el-table-column label="商品ID" prop="goodsId" />
               <el-table-column label="商品标题" prop="goodsTitle" show-overflow-tooltip />
               <el-table-column label="规格" prop="attrVals" />
               <el-table-column label="数量" prop="num" />
@@ -148,7 +148,14 @@
           </el-tab-pane>
           <el-tab-pane label="我的收藏" name="collect">
             <el-table :data="collTableData" style="width: 100%">
-              <el-table-column label="商品编号" prop="goodsSn" />
+              <el-table-column label="商品ID" prop="goodsId" />
+              <el-table-column label="商品图片" prop="homePic">
+                <template slot-scope="scope">
+                  <el-image v-if="scope.row.homePic" style="width: 30px; height: 30px" :src="scope.row.homePic" :preview-src-list="[scope.row.homePic]" />
+                </template>
+              </el-table-column>
+              <el-table-column label="商品名称" prop="goodsTitle" />
+              <el-table-column label="价格" prop="price" />
               <el-table-column label="创建时间">
                 <template slot-scope="scope">
                   <span>{{ scope.row.createDate | parseTime }}</span>
@@ -158,7 +165,14 @@
           </el-tab-pane>
           <el-tab-pane label="浏览记录" name="footprint">
             <el-table :data="footTableData" style="width: 100%">
-              <el-table-column label="商品编号" prop="goodsSn" />
+              <el-table-column label="商品ID" prop="goodsId" />
+              <el-table-column label="商品图片" prop="homePic">
+                <template slot-scope="scope">
+                  <el-image v-if="scope.row.homePic" style="width: 30px; height: 30px" :src="scope.row.homePic" :preview-src-list="[scope.row.homePic]" />
+                </template>
+              </el-table-column>
+              <el-table-column label="商品名称" prop="goodsTitle" />
+              <el-table-column label="价格" prop="price" />
               <el-table-column label="创建时间">
                 <template slot-scope="scope">
                   <span>{{ scope.row.createDate | parseTime }}</span>

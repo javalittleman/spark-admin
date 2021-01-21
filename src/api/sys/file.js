@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function filePage(params) {
   return request({
-    url: '/file/file-info/page',
+    url: '/file/page',
     method: 'Get',
     params
   })
@@ -10,7 +10,7 @@ export function filePage(params) {
 
 export function deleteFile(id) {
   return request({
-    url: `/file/file-info/${id}`,
+    url: `/file/${id}`,
     method: 'delete'
   })
 }
