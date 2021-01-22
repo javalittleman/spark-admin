@@ -32,60 +32,60 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column prop="name" label="菜单名称" width="180" />
-      <el-table-column prop="icon" label="图标">
+      <el-table-column prop="icon" label="图标" width="100">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.icon ? scope.row.icon : ''" />
         </template>
       </el-table-column>
-      <el-table-column prop="type" label="菜单类型">
+      <el-table-column prop="type" label="菜单类型" width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.type === '0'">目录</span>
           <span v-else-if="scope.row.type === '1'">菜单</span>
           <span v-else>按钮</span>
         </template>
       </el-table-column>
-      <el-table-column prop="iFrame" label="是否外链">
+      <el-table-column prop="iFrame" label="是否外链" width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.iframe">是</span>
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="path" label="路径" :show-overflow-tooltip="true" width="180" />
-      <el-table-column prop="component" label="组件路径" width="180" />
+      <el-table-column prop="path" label="路径" :show-overflow-tooltip="true" />
+      <el-table-column prop="component" label="组件路径" />
       <el-table-column prop="permission" label="权限" />
-      <el-table-column prop="hidden" label="是否隐藏">
+      <el-table-column prop="hidden" label="是否隐藏" width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.hidden">是</span>
-          <span v-else>否</span>
+          <span>{{ scope.row.hidden ? '是' : '否' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" />
-      <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+      <el-table-column prop="sort" label="排序" width="100" />
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button v-if="hasPerm('menu:edit')" type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="hasPerm('menu:delete')" type="text" size="mini" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
+          <el-button v-if="hasPerm('menu:add') && row.type !== '2'" type="text" size="mini" icon="el-icon-bottom" title="新增下级" @click="handleCreateChild(row)">下级</el-button>
+          <el-button v-if="hasPerm('menu:delete')" type="text" style="color:red" size="mini" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px" style="margin-left:10px;">
+      <el-form ref="dataForm" :rules="rules" :model="formData" label-position="right" label-width="100px" style="margin-left:10px;">
         <el-form-item label="菜单类型" prop="type">
-          <el-radio-group v-model="temp.type" size="mini">
+          <el-radio-group v-model="formData.type" size="mini">
             <el-radio-button v-for="(type, index) in menuTypeList" :key="index" :label="index">{{ type }}</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上级菜单" prop="pid">
-          <treeselect v-model="temp.pid" :normalizer="normalizer" :multiple="false" :options="treeData" clear-value-text="清除" placeholder=" " style="width:100%" />
+          <treeselect v-model="formData.pid" :normalizer="normalizer" :multiple="false" :options="treeData" clear-value-text="清除" placeholder=" " style="width:100%" />
         </el-form-item>
         <el-row>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="name">
-              <el-input v-model="temp.name" />
+              <el-input v-model="formData.name" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-show="temp.type.toString() !== '2'" label="图标" prop="icon">
-              <el-input v-model="temp.icon">
+            <el-form-item v-show="formData.type.toString() !== '2'" label="图标" prop="icon">
+              <el-input v-model="formData.icon">
                 <el-button slot="append" icon="el-icon-brush" @click="chooseIcons" />
               </el-input>
             </el-form-item>
@@ -93,8 +93,8 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-show="temp.type.toString() !== '2'" label="是否外链" prop="iFrame">
-              <el-radio-group v-model="temp.iFrame" size="mini">
+            <el-form-item v-show="formData.type.toString() !== '2'" label="是否外链" prop="iFrame">
+              <el-radio-group v-model="formData.iFrame" size="mini">
                 <el-radio-button label="true">是</el-radio-button>
                 <el-radio-button label="false">否</el-radio-button>
               </el-radio-group>
@@ -102,7 +102,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否隐藏" prop="hidden">
-              <el-radio-group v-model="temp.hidden" size="mini">
+              <el-radio-group v-model="formData.hidden" size="mini">
                 <el-radio-button label="true">是</el-radio-button>
                 <el-radio-button label="false">否</el-radio-button>
               </el-radio-group>
@@ -111,21 +111,21 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-show="temp.type.toString() !== '2'" label="路由地址" prop="path">
-              <el-input v-model="temp.path" placeholder="路径：example" />
+            <el-form-item v-show="formData.type.toString() !== '2'" label="路由地址" prop="path">
+              <el-input v-model="formData.path" placeholder="路径：example" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-show="temp.iFrame.toString() === 'false' && temp.type.toString() === '1'" label="组件路径" prop="component">
-              <el-input v-model="temp.component" placeholder="目录:Layout 二级菜单:ParentView 其他 sys/user/index" />
+            <el-form-item v-show="formData.iFrame.toString() === 'false' && formData.type.toString() === '1'" label="组件路径" prop="component">
+              <el-input v-model="formData.component" placeholder="目录:Layout 二级菜单:ParentView 其他 sys/user/index" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item v-show="temp.type.toString() !== '0'" label="权限" prop="permission">
-          <el-input v-model="temp.permission" />
+        <el-form-item v-show="formData.type.toString() !== '0'" label="权限" prop="permission">
+          <el-input v-model="formData.permission" />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="temp.sort" :min="1" label="排序" />
+          <el-input-number v-model="formData.sort" :min="1" label="排序" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -168,7 +168,7 @@ export default {
       isShowTable: false,
       dialogFormVisible: false,
       dialogStatus: '',
-      temp: {
+      formData: {
         id: undefined,
         pid: '',
         name: '',
@@ -226,7 +226,7 @@ export default {
       }
     },
     resetTemp() {
-      this.temp = {
+      this.formData = {
         id: undefined,
         pid: null,
         name: '',
@@ -244,7 +244,7 @@ export default {
       this.iconVisible = true
     },
     chooseIcon(icon) {
-      this.temp.icon = icon
+      this.formData.icon = icon
       this.iconVisible = false
     },
     handleCreate() {
@@ -255,8 +255,18 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    handleCreateChild(row) {
+      this.resetTemp()
+      this.formData.pid = row.id
+      this.formData.type = (Number(row.type) + 1).toString()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row)
+      this.formData = Object.assign({}, row)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -284,10 +294,10 @@ export default {
       // 新增
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (this.temp.iFrame) this.temp.component = null
-          if (this.temp.type === '0') this.temp.component = 'Layout'
+          if (this.formData.iFrame) this.formData.component = null
+          if (this.formData.type === '0') this.formData.component = 'Layout'
           this.confirmLoading = true
-          saveMenu(this.temp).then(() => {
+          saveMenu(this.formData).then(() => {
             this.confirmLoading = false
             this.getList()
             this.dialogFormVisible = false
@@ -306,10 +316,10 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (this.temp.iFrame) this.temp.component = null
-          if (this.temp.type === 0) this.temp.component = 'Layout'
+          if (this.formData.iFrame) this.formData.component = null
+          if (this.formData.type === 0) this.formData.component = 'Layout'
           this.confirmLoading = true
-          updateMenu(this.temp).then(() => {
+          updateMenu(this.formData).then(() => {
             this.confirmLoading = false
             this.getList()
             this.dialogFormVisible = false

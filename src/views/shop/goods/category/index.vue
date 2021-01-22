@@ -28,7 +28,6 @@
       :header-cell-style="{background: '#f8f8f9'}"
       row-key="id"
       border
-      default-expand-all
       element-loading-text="加载中"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
@@ -48,7 +47,8 @@
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button v-if="hasPerm('shop:category:edit')" type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="hasPerm('shop:category:del')" type="text" size="mini" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
+          <el-button v-if="hasPerm('shop:category:edit')" type="text" size="mini" icon="el-icon-bottom" title="新增下级" @click="handleCreateChild(row)">下级</el-button>
+          <el-button v-if="hasPerm('shop:category:del')" type="text" style="color:red" size="mini" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -176,6 +176,15 @@ export default {
     },
     handleCreate() {
       resetData(this.formData)
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleCreateChild(row) {
+      resetData(this.formData)
+      this.formData.pid = row.id
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {

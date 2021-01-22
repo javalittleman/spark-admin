@@ -148,6 +148,7 @@
                 v-if="hasPerm('user:delete') && row.username !== 'admin'"
                 type="text"
                 size="mini"
+                style="color:red"
                 icon="el-icon-delete"
                 @click="handleModifyStatus(row,$index)"
               >删除</el-button>
@@ -168,7 +169,7 @@
       <el-form
         ref="dataForm"
         :rules="rules"
-        :model="temp"
+        :model="formData"
         label-position="right"
         label-width="100px"
         style="margin-left:10px;"
@@ -176,31 +177,31 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="账号:" prop="username">
-              <el-input v-model="temp.username" :disabled="disabled" />
+              <el-input v-model="formData.username" :disabled="disabled" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="真实姓名:" prop="nickname">
-              <el-input v-model="temp.nickname" />
+              <el-input v-model="formData.nickname" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="邮箱:" prop="email">
-              <el-input v-model="temp.email" />
+              <el-input v-model="formData.email" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="电话:" prop="phone">
-              <el-input v-model="temp.phone" />
+              <el-input v-model="formData.phone" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="性别:" prop="sex">
-              <el-radio-group v-model="temp.sex" size="mini">
+              <el-radio-group v-model="formData.sex" size="mini">
                 <el-radio-button
                   v-for="item in sexOptions"
                   :key="item.value"
@@ -211,7 +212,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="状态:" prop="status">
-              <el-select v-model="temp.status" placeholder="选择状态" style="width:100%">
+              <el-select v-model="formData.status" placeholder="选择状态" style="width:100%">
                 <el-option
                   v-for="item in statusOptions"
                   :key="item.value"
@@ -224,7 +225,7 @@
         </el-row>
         <el-form-item label="部门:" prop="deptId">
           <treeselect
-            v-model="temp.deptId"
+            v-model="formData.deptId"
             :multiple="false"
             :options="treeDeptData"
             clear-value-text="清除"
@@ -251,7 +252,7 @@
         </el-form-item>
         <el-form-item label="备注:" prop="remarks">
           <el-input
-            v-model="temp.remarks"
+            v-model="formData.remarks"
             :autosize="{ minRows: 2, maxRows: 4}"
             type="textarea"
             placeholder="请填写备注"
@@ -280,7 +281,7 @@ import * as user from '@/api/sys/user.js'
 import { getDeptTree } from '@/api/sys/dept.js'
 import { getRoleAll } from '@/api/sys/role.js'
 import { getDictList } from '@/utils/dict'
-import { downloadExcel } from '@/utils'
+import { resetData, downloadExcel } from '@/utils'
 
 export default {
   name: 'User',
@@ -322,16 +323,17 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       roles: [],
-      temp: {
+      formData: {
         id: undefined,
-        username: '',
-        nickname: '',
-        email: '',
-        phone: '',
+        username: null,
+        nickname: null,
+        email: null,
+        avatar: 'others/14.jpg',
+        phone: null,
         deptId: 0,
-        deptName: '',
+        deptName: null,
         status: '1',
-        remarks: '',
+        remarks: null,
         sex: 1,
         roles: []
       },
@@ -377,10 +379,7 @@ export default {
       })
     },
     reset() {
-      this.listQuery.username = ''
-      this.listQuery.nickname = ''
-      this.listQuery.status = ''
-      this.listQuery.deptId = null
+      resetData(this.listQuery, { current: 1, size: 20 })
     },
     getDeptTree() {
       getDeptTree(true).then(response => {
@@ -397,14 +396,15 @@ export default {
       this.showStatus = !this.showStatus
     },
     resetTemp() {
-      this.temp = {
+      this.formData = {
         id: undefined,
-        username: '',
-        nickname: '',
+        username: null,
+        nickname: null,
         deptId: null,
-        deptName: '',
-        email: '',
-        phone: '',
+        deptName: null,
+        email: null,
+        avatar: 'others/14.jpg',
+        phone: null,
         status: '1',
         sex: 1,
         roles: []
@@ -416,7 +416,7 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     selectDepart(val) {
-      this.temp.deptName = val.label
+      this.formData.deptName = val.label
     },
     handleNodeClick(data) {
       // 点击部门树触发事件
@@ -441,10 +441,10 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row)
-      this.temp.status = this.temp.status.toString()
+      this.formData = Object.assign({}, row)
+      this.formData.status = this.formData.status.toString()
       // 获取用户角色
-      user.getRolIds(this.temp.id).then(response => {
+      user.getRolIds(this.formData.id).then(response => {
         this.roles = response.data
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -475,13 +475,13 @@ export default {
       // 新增
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          this.temp.roles = this.roles
+          this.formData.roles = this.roles
           this.confirmLoading = true
-          user.createUser(this.temp)
+          user.createUser(this.formData)
             .then(response => {
               this.confirmLoading = false
-              this.temp.id = response.data.id
-              this.list.unshift(this.temp)
+              this.formData.id = response.data.id
+              this.list.unshift(this.formData)
               this.dialogFormVisible = false
               this.$notify({
                 title: '成功',
@@ -500,14 +500,14 @@ export default {
       // 修改
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          this.temp.roles = this.roles
+          this.formData.roles = this.roles
           this.confirmLoading = true
-          const tempData = Object.assign({}, this.temp)
+          const tempData = Object.assign({}, this.formData)
           user.updateUser(tempData)
             .then(() => {
               this.confirmLoading = false
-              const index = this.list.findIndex(v => v.id === this.temp.id)
-              this.list.splice(index, 1, this.temp)
+              const index = this.list.findIndex(v => v.id === this.formData.id)
+              this.list.splice(index, 1, this.formData)
               this.dialogFormVisible = false
               this.$notify({
                 title: '成功',

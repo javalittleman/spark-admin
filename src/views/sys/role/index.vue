@@ -108,6 +108,7 @@
                 <el-button
                   v-if="hasPerm('user:delete')"
                   size="mini"
+                  style="color:red"
                   type="text"
                   icon="el-icon-delete"
                   @click="handleDelete(row,$index)"
@@ -496,3 +497,19 @@ export default {
   }
 }
 </script>
+
+<style>
+.vue-treeselect__control {
+  height: 32px !important;
+}
+.vue-treeselect__input-container {
+  height: 30px !important;
+}
+.vue-treeselect__placeholder{
+  line-height: 28px;
+  font-size: 14px;
+}
+.vue-treeselect input{
+  font-size: 16px;
+}
+</style>

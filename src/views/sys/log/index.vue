@@ -95,7 +95,7 @@
       </el-table-column>
       <el-table-column label="地址" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.address }}</span>
+          <span>{{ scope.row.location }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" align="center">

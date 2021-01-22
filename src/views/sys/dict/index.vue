@@ -92,6 +92,7 @@
           >子项</el-button>
           <el-button
             v-if="hasPerm('dict:delete')"
+            style="color:red"
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -206,7 +207,7 @@
               @click="handleItemUpdate(row)"
             >编辑</el-button>
             <el-button
-              v-if="row.isDeleted!='1'"
+              style="color:red"
               size="mini"
               type="text"
               icon="el-icon-delete"
