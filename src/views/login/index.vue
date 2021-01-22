@@ -1,10 +1,10 @@
 <template>
   <div class="login-container">
-    <el-row>
-      <el-col :xs="24" :sm="24" :md="12" :lg="16" :xl="16">
+    <el-row style="height: 100%;">
+      <el-col :xs="24" :sm="24" :md="12" :lg="18" :xl="18">
         <div style="color: transparent;">占位符</div>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
+      <el-col :xs="24" :sm="24" :md="24" :lg="6" :xl="6" class="login-box">
         <el-form
           ref="loginForm"
           auto-complete="on"
@@ -15,7 +15,7 @@
           class="card-box login-form"
         >
           <div class="title">
-            <svg-icon icon-class="sparkler" />hello !
+            <svg-icon icon-class="sparkler" />Hello !
           </div>
           <div class="title-tips">欢迎来到Spark平台！</div>
           <el-form-item prop="username" class="login-form-admin">
@@ -131,8 +131,7 @@ $base-color-blue: $base-color-default;
 $base-font-color: #606266;
 
 .login-container {
-  height: 100vh;
-  min-height: 600px;
+  height: 100%;
   background: url('~@/assets/background.jpg') center center fixed no-repeat;
   background-size: cover;
 
@@ -276,5 +275,9 @@ $base-font-color: #606266;
       caret-color: $base-font-color;
     }
   }
+}
+.login-box{
+  box-shadow: 0 0 28px rgba(0,0,0,.08);
+  height: 100%
 }
 </style>
