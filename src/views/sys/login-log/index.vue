@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column label="登录系统" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.system }}</span>
+          <span>{{ scope.row.osType }}</span>
         </template>
       </el-table-column>
       <el-table-column label="登录浏览器" align="center">
