@@ -95,7 +95,6 @@ export default {
       total: 0,
       listLoading: true,
       showStatus: true,
-      createTimeArray: [],
       listQuery: {
         current: 1,
         size: 20,

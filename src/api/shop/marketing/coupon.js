@@ -8,6 +8,14 @@ export function page(params) {
   })
 }
 
+export function pageUser(params) {
+  return request({
+    url: '/wxshop/marketing/coupon/user/page',
+    method: 'get',
+    params
+  })
+}
+
 export function saveOrUpdate(params) {
   return request({
     url: '/wxshop/marketing/coupon',

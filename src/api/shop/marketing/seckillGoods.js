@@ -16,6 +16,13 @@ export function saveOrUpdate(params) {
   })
 }
 
+export function day() {
+  return request({
+    url: '/wxshop/marketing/seckill/goods/day',
+    method: 'get'
+  })
+}
+
 export function del(id) {
   return request({
     url: `/wxshop/marketing/seckill/goods/${id}`,

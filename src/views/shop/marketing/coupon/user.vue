@@ -7,12 +7,6 @@
           <el-input v-model="listQuery.userId" placeholder="用户编号" style="width: 200px;" />
         </div>
       </div>
-      <div class="form-group">
-        <label class="control-label">商品ID:</label>
-        <div class="control-inline">
-          <el-input v-model="listQuery.goodsId" style="width: 200px;" />
-        </div>
-      </div>
       <el-button
         v-waves
         class="filter-item"
@@ -47,25 +41,25 @@
       highlight-current-row
     >
       <el-table-column label="用户编号" prop="userId" />
-      <el-table-column label="商品信息">
+      <el-table-column label="优惠券名称" prop="coupon.name" />
+      <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-row>
-            <el-col :span="6">
-              <el-image style="width: 40px; height: 40px" :src="scope.row.homePic" fit="fit" />
-            </el-col>
-            <el-col :span="18">
-              <div>{{ scope.row.goodsId }}</div>
-              <div>{{ scope.row.goodsTitle }}</div>
-            </el-col>
-          </el-row>
+          <span>{{ scope.row.status | dictLabel('coupon_user_status') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="规格" prop="attrVals" />
-      <el-table-column label="数量" prop="num" />
-      <el-table-column label="价格" prop="price" />
-      <el-table-column label="创建时间">
+      <el-table-column label="领取时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createDate | parseTime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="过期时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.endTime | parseTime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="使用时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.useTime | parseTime }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -81,13 +75,13 @@
 </template>
 
 <script>
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as cart from '@/api/shop/user/cart.js'
+import waves from '@/directive/waves'
+import Pagination from '@/components/Pagination'
+import * as coupon from '@/api/shop/marketing/coupon.js'
 import { resetData } from '@/utils'
 
 export default {
-  name: 'WxShopCart',
+  name: 'WxShopCouponUser',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -96,10 +90,11 @@ export default {
       total: 0,
       listLoading: true,
       showStatus: true,
+      couponId: this.$route.params && this.$route.params.id,
       listQuery: {
         current: 1,
         size: 20,
-        goodsId: null,
+        couponId: this.couponId,
         userId: null
       }
     }
@@ -110,7 +105,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      cart.page(this.listQuery).then(response => {
+      coupon.pageUser(this.listQuery).then(response => {
         this.list = response.data.records
         this.total = response.data.total
         this.listQuery.current = response.data.current
@@ -123,7 +118,7 @@ export default {
       this.showStatus = !this.showStatus
     },
     reset() {
-      resetData(this.listQuery, { current: 1, size: 20 })
+      resetData(this.listQuery, { couponId: this.couponId, current: 1, size: 20 })
     },
     handleFilter() {
       this.listQuery.current = 1

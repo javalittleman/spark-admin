@@ -41,12 +41,19 @@
         <el-button
           v-if="hasPerm('shop:auth:edit')"
           class="filter-item"
-          style="margin-left: 10px;"
           type="success"
           icon="el-icon-edit"
           plain
           @click="handleCreate"
         >新增</el-button>
+        <el-button
+          v-if="hasPerm('shop:auth:edit')"
+          class="filter-item"
+          type="info"
+          icon="el-icon-edit"
+          plain
+          @click="handleAddDay"
+        >一键续期</el-button>
       </div>
       <div class="el-button-group table-opts-right">
         <el-button icon="el-icon-search" circle @click="showClick" />
@@ -311,6 +318,23 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleAddDay() {
+      this.$confirm('是否一键续期?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        seckillGoods.day().then(response => {
+          this.$notify({
+            title: '成功',
+            message: '操作成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.handleFilter()
+        })
       })
     },
     handleDelete(row, index) {

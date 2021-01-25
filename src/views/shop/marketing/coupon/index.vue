@@ -75,9 +75,12 @@
           <el-tag :type="scope.row.status | statusFilter"> {{ scope.row.status | dictLabel('coupon_status') }} </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
+          <router-link :to="'/coupon/user/'+row.id">
+            <el-button type="text" size="mini" icon="el-icon-user" title="领取优惠券的用户">用户</el-button>'
+          </router-link>
           <el-button type="text" size="mini" style="color:red" icon="el-icon-delete" @click="handleDel(row,$index)">删除</el-button>
         </template>
       </el-table-column>

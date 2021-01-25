@@ -68,6 +68,8 @@ export default {
               duration: 5 * 1000
             })
             this.updateLoading = false
+          }).catch(() => {
+            this.updateLoading = false
           })
         }
       })

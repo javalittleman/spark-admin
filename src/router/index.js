@@ -163,6 +163,21 @@ export const constantRouterMap = [{
       }
     }
   ]
+},
+{
+  path: '/marketting/coupon',
+  component: Layout,
+  hidden: true,
+  children: [
+    {
+      path: '/coupon/user/:id(\\d+)',
+      component: () => import('@/views/shop/marketing/coupon/user'),
+      name: '优惠券用户',
+      meta: {
+        title: '优惠券用户'
+      }
+    }
+  ]
 }
 ]
 export const notFoundRouter = [{
