@@ -52,6 +52,7 @@
     >
       <el-table-column label="appID" prop="appId" />
       <el-table-column label="secret" prop="secret" />
+      <el-table-column label="商户号" prop="mchid" />
       <el-table-column label="客户端" prop="clientId" />
       <el-table-column label="备注" prop="remarks" />
       <el-table-column label="创建时间">
@@ -100,6 +101,9 @@
           <el-select v-model="formData.clientId" placeholder="选择客户端" style="width:100%">
             <el-option v-for="item in oauth2Options" :key="item.label" :label="item.label" :value="item.label" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="商户号" prop="mchid">
+          <el-input v-model="formData.mchid" />
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input
