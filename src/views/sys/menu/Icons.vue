@@ -19,10 +19,10 @@
       </el-tab-pane>
     </el-tabs>
     <div slot="footer" class="dialog-footer">
-      <el-button type="warning" plain @click="isVisible = false">
+      <el-button @click="isVisible = false">
         取消
       </el-button>
-      <el-button type="primary" plain @click="confirm">
+      <el-button type="primary" @click="confirm">
         确定
       </el-button>
     </div>

@@ -5,7 +5,7 @@
         <el-card>
           <p><i class="el-icon-monitor" />  {{ item.osType }}</p>
           <p><i class="el-icon-mouse" />  {{ item.browser }}</p>
-          <p><i class="el-icon-price-tag" /> {{ item.locationIp }}</p>
+          <p><i class="el-icon-price-tag" /> {{ item.ip }}</p>
           <p><i class="el-icon-map-location" /> {{ item.location }}</p>
         </el-card>
       </el-timeline-item>

@@ -61,12 +61,14 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.updateLoading = true
-          updatetUserInfo({ password: this.temp.repassword }).then(response => {
+          updatetUserInfo({ password: this.temp.password }).then(response => {
             this.$message({
               message: '更新成功',
               type: 'success',
               duration: 5 * 1000
             })
+            this.updateLoading = false
+          }).catch(() => {
             this.updateLoading = false
           })
         }

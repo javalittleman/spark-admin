@@ -106,8 +106,9 @@
                   @click="rowClick(row)"
                 >授权</el-button>
                 <el-button
-                  v-if="hasPerm('user:delete')"
+                  v-if="hasPerm('role:delete') && row.id !== 1"
                   size="mini"
+                  style="color:red"
                   type="text"
                   icon="el-icon-delete"
                   @click="handleDelete(row,$index)"
@@ -137,7 +138,7 @@
           <el-tree
             ref="menu"
             :data="treeData"
-            :default-checked-keys="menuIds"
+            check-strictly
             :props="defaultProps"
             accordion
             show-checkbox
@@ -284,7 +285,6 @@ export default {
       dialogStatus: '',
       treeData: null,
       treeDeptData: null,
-      menuIds: [],
       formData: {
         id: null,
         roleName: '',
@@ -365,7 +365,7 @@ export default {
       this.authLoading = true
       this.nowRoleText = '(当前角色:' + row.roleName + ')'
       getRoleAuth(this.currentId).then(response => {
-        this.menuIds = response.data
+        this.$refs.menu.setCheckedKeys(response.data)
         this.authLoading = false
       })
     },
@@ -496,3 +496,19 @@ export default {
   }
 }
 </script>
+
+<style>
+.vue-treeselect__control {
+  height: 32px !important;
+}
+.vue-treeselect__input-container {
+  height: 30px !important;
+}
+.vue-treeselect__placeholder{
+  line-height: 28px;
+  font-size: 14px;
+}
+.vue-treeselect input{
+  font-size: 16px;
+}
+</style>

@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column label="登录IP" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.locationIp }}</span>
+          <span>{{ scope.row.ip }}</span>
         </template>
       </el-table-column>
       <el-table-column label="登录地点" align="center">

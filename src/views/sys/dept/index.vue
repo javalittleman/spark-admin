@@ -49,7 +49,7 @@
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button v-if="hasPerm('dept:edit')" type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="hasPerm('dept:delete')" type="text" size="mini" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
+          <el-button v-if="hasPerm('dept:delete')" style="color:red" type="text" size="mini" icon="el-icon-delete" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

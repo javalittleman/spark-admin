@@ -169,6 +169,7 @@
           </router-link>
           <el-button
             v-if="hasPerm('quartz:delete')"
+            style="color:red"
             type="text"
             size="mini"
             icon="el-icon-delete"

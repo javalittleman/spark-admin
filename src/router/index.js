@@ -86,7 +86,7 @@ export const constantRouterMap = [{
       name: 'CreateArticle',
       meta: {
         title: '创建文章',
-        noCache: true
+        noCache: false
       }
     },
     {
@@ -120,6 +120,62 @@ export const constantRouterMap = [{
       component: () => import('@/views/sys/quartz/loglist'),
       name: '调度日志',
       meta: { title: '调度日志' }
+    }
+  ]
+},
+{
+  path: '/shopGoods',
+  component: Layout,
+  hidden: true,
+  children: [
+    {
+      path: '/shop/goods/create',
+      component: () => import('@/views/shop/goods/create'),
+      name: 'WxShopGoodsCreate',
+      meta: {
+        title: '新增商品',
+        noCache: false
+      }
+    },
+    {
+      path: '/shop/goods/edit/:id(\\d+)',
+      component: () => import('@/views/shop/goods/create'),
+      name: 'WxShopGoodsCreate',
+      meta: {
+        title: '编辑商品',
+        noCache: false
+      }
+    }
+  ]
+},
+{
+  path: '/order',
+  component: Layout,
+  hidden: true,
+  children: [
+    {
+      path: '/order/detail/:id(\\d+)',
+      component: () => import('@/views/shop/order/order-detail'),
+      name: 'WxShopOrderDetail',
+      meta: {
+        title: '订单详情',
+        noCache: false
+      }
+    }
+  ]
+},
+{
+  path: '/marketting/coupon',
+  component: Layout,
+  hidden: true,
+  children: [
+    {
+      path: '/coupon/user/:id(\\d+)',
+      component: () => import('@/views/shop/marketing/coupon/user'),
+      name: '优惠券用户',
+      meta: {
+        title: '优惠券用户'
+      }
     }
   ]
 }

@@ -18,7 +18,7 @@
     </div>
     <div class="table-opts">
       <div class="table-opts-left">
-        <el-button class="filter-item" type="success" icon="el-icon-edit" plain @click="handleCreate">新增</el-button>
+        <el-button v-if="hasPerm('oauth:add')" class="filter-item" type="success" icon="el-icon-edit" plain @click="handleCreate">新增</el-button>
       </div>
       <div class="el-button-group table-opts-right">
         <el-button icon="el-icon-search" circle @click="showClick" />
@@ -64,13 +64,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
-          <el-button
-            v-if="row.isDeleted!='1'"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleModifyStatus(row,$index)"
-          >删除</el-button>
+          <el-button v-if="hasPerm('oauth:edit')" type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">编辑</el-button>
+          <el-button v-if="hasPerm('oauth:delete')" style="color:red" type="text" icon="el-icon-delete" @click="handleModifyStatus(row,$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
