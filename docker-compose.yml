@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+  node:
+    restart: always
+    image: node:12
+    working_dir: /usr/src/app
+    expose:
+      - 8000
+    # stdin_open: true
+    # tty: true
+    volumes:
+      - $PWD/:/usr/src/app
+      - node:/usr/local/lib/node_modules/
+    command: sh -c "npm install --registry=https://registry.npm.taobao.org && npm run dev && npm run build:prod"
+    ports:
+      - 8000:8000
+
+  nginx:
+    image: nginx:1.17.8
+    restart: always
+    ports:
+      - 8181:80
+      - 8282:8282
+    volumes:
+      - $PWD/nginx/log:/var/log/nginx
+      - $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - $PWD/nginx/conf.d/:/etc/nginx/conf.d/
+      - $PWD/nginx/web:/usr/share/nginx/
+
+networks:
+  default:
+    external:
+      name: spark-platform_default
+
