@@ -6,38 +6,40 @@ node {
         "init = 'true'"
     ]) {
         sh "printenv"
-        if(env.compile == 'true'){
-            stage('Build') {
-                ansiColor('vga'){
-                    docker.image('node:12').inside() {
-                        sh 'npm install --registry=https://registry.npm.taobao.org && npm run dev && npm run build:prod'
-                    }
-                }
-                // ansiColor('vga'){
-                //     docker.image('maven:3.3.3').inside('-v /data/maven/repo:/root/.m2 -v /etc/localtime:/etc/localtime -v $WORKSPACE/settings.xml:/usr/share/maven/conf/settings.xml -e TZ=Asia/Shanghai') {
-                //         sh 'mvn -DskipTests clean package'
-                //     }
-                // }
+        script{
+          if(env.compile == 'true'){
+              stage('Build') {
+                  ansiColor('vga'){
+                      docker.image('node:12').inside() {
+                          sh 'npm install --registry=https://registry.npm.taobao.org && npm run dev && npm run build:prod'
+                      }
+                  }
+                  // ansiColor('vga'){
+                  //     docker.image('maven:3.3.3').inside('-v /data/maven/repo:/root/.m2 -v /etc/localtime:/etc/localtime -v $WORKSPACE/settings.xml:/usr/share/maven/conf/settings.xml -e TZ=Asia/Shanghai') {
+                  //         sh 'mvn -DskipTests clean package'
+                  //     }
+                  // }
 
-                // ansiColor('vga'){
-                //     docker.image('gradle').inside('-v /etc/localtime:/etc/localtime -e TZ=Asia/Shanghai') {
-                //         sh 'gradle clean build -x test'
-                //     }
-                // }
-            }
+                  // ansiColor('vga'){
+                  //     docker.image('gradle').inside('-v /etc/localtime:/etc/localtime -e TZ=Asia/Shanghai') {
+                  //         sh 'gradle clean build -x test'
+                  //     }
+                  // }
+              }
 
-            // stage('Build') {
-            //     ansiColor('vga'){
-            //         if (isUnix()) {
-            //             echo "\033[5;30;42mLinux\033[0m system"
-            //             sh 'mvn -Dmaven.test.failure.ignore -DskipTests clean package'
-            //         } else {
-            //             echo "\033[5;30;42mWindows\033[0m system"
-            //             bat(/mvn -Dmaven.test.failure.ignore -DskipTests clean package/)
-            //         }
-            //     }
-            // }
+              // stage('Build') {
+              //     ansiColor('vga'){
+              //         if (isUnix()) {
+              //             echo "\033[5;30;42mLinux\033[0m system"
+              //             sh 'mvn -Dmaven.test.failure.ignore -DskipTests clean package'
+              //         } else {
+              //             echo "\033[5;30;42mWindows\033[0m system"
+              //             bat(/mvn -Dmaven.test.failure.ignore -DskipTests clean package/)
+              //         }
+              //     }
+              // }
 
+          }
         }
 
         stage('Deploy') {
