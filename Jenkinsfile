@@ -9,7 +9,7 @@ node {
         echo "${env.compile}"
         sh "printenv"
         script{
-          if(env.compile == 'true'){
+          if(env.compile.toBoolean(){
               stage('Build') {
                   ansiColor('vga'){
                       docker.image('node:12').inside() {
@@ -49,7 +49,7 @@ node {
             ansiColor('vga'){
 
                 // 初始化
-                if(env.init == 'true'){
+                if(env.init.toBoolean(){
                     echo "初始化"
                     sshPublisher(publishers: [
                             sshPublisherDesc(configName: '192.168.108.81(prod)', transfers: [
