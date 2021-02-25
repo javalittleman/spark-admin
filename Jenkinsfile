@@ -2,9 +2,11 @@ node {
     checkout scm
 
     withEnv([
-        "compile = 'true'",
-        "init = 'true'"
+        "compile='true'",
+        "init='true'"
     ]) {
+        echo "$compile"
+        echo "${env.compile}"
         sh "printenv"
         script{
           if(env.compile == 'true'){
