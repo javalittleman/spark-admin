@@ -112,7 +112,7 @@ node {
         }
 
         stage('Results') {
-            archiveArtifacts '**/*.jar'
+            archiveArtifacts 'dist/**'
         }
 
 
