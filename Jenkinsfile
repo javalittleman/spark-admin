@@ -93,7 +93,7 @@ node {
                         execCommand:
                         '''
                             cd /data/dockerapp/spark-platform
-                            docker-compose up -d auth cms file flowable gateway quartz tx wx control biz
+                            docker-compose up -d nginxz
                         ''',
                         execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+',
                         remoteDirectory: '/data/dockerapp/spark-admin',
