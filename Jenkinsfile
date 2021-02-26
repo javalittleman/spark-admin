@@ -103,7 +103,7 @@ node {
                         sshTransfer(cleanRemote: false, excludes: '',
                         execCommand:
                         '''
-                            cd /data/dockerapp/spark-platform
+                            cd /data/dockerapp/spark-admin
                             docker-compose up -d nginxz
                         ''',
                         execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+',
