@@ -25,7 +25,7 @@ node {
             stage('Build') {
                 ansiColor('vga'){
                     docker.image('node:12').inside() {
-                        sh 'npm install --registry=https://registry.npm.taobao.org && npm run dev && npm run build:prod'
+                        sh 'npm install --registry=https://registry.npm.taobao.org && npm run build:prod'
                     }
                 }
                 // ansiColor('vga'){
