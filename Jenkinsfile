@@ -20,6 +20,7 @@ node {
         echo "bb.equals('helloworld')...${bb.equals('helloworld')}"
         echo "bb=='helloworld'...${bb=='helloworld'}"
         echo "bb='helloworld'...${bb='helloworld'}"
+        echo "bb==='helloworld'...${bb==='helloworld'}"
         echo "cc==true...${cc==true?true:false}"
         echo "-------------------"
         sh "printenv"
