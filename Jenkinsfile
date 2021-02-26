@@ -15,6 +15,9 @@ node {
         echo "env.bb=${bb}"
         echo "env.cc=${env.cc}"
         echo "env.dd.toString().toBoolean()=${env.dd.toString().toBoolean()}"
+
+        echo "aa==1...${aa==1?true:false}"
+        echo "cc==true$...{cc==true?true:false}"
         echo "-------------------"
         sh "printenv"
         if(env.compile.toBoolean()){
