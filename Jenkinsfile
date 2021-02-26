@@ -12,6 +12,7 @@ node {
         echo "-------------------"
         echo "aa=$aa"
         echo "env.bb=${env.bb}"
+        echo "env.bb=${bb}"
         echo "env.cc=${env.cc}"
         echo "env.dd.toBoolean()=${env.dd.toBoolean()}"
         echo "-------------------"
