@@ -2,11 +2,19 @@ node {
     checkout scm
 
     withEnv([
-        "compile='true'",
-        "init='true'"
+        "compile=true",
+        "init=true",
+        "aa=1",
+        "bb='helloworld'",
+        "cc=true",
+        "dd='true'"
     ]) {
-        echo "$compile"
-        echo "${env.compile}"
+        echo "-------------------"
+        echo "aa=$aa"
+        echo "env.bb=${env.bb}"
+        echo "env.cc=${env.cc}"
+        echo "env.dd.toBoolean()=${env.dd.toBoolean()}"
+        echo "-------------------"
         sh "printenv"
         if(env.compile.toBoolean()){
             stage('Build') {
