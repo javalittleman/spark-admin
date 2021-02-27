@@ -9,7 +9,7 @@ node {
   echo "env.init=$env.init.toBoolean()"
 
   sh "printenv"
-  if(env.compile.){
+  if(env.compile){
       stage('Build') {
           ansiColor('vga'){
               docker.image('node:12').inside() {
