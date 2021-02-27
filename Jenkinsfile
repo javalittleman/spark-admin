@@ -1,6 +1,6 @@
 node {
   checkout scm
-  def compile=true,
+  def compile=true
   def init=true
 
   echo "compile=$compile"
