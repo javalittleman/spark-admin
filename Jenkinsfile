@@ -22,7 +22,7 @@ node {
         echo "bb.trim()=='helloworld'...${bb.trim()=='helloworld'}"
         echo "cc==true...${cc==true?true:false}"
         echo "-------------------"
-        if($env.bb=='helloworld'){
+        if(bb=='helloworld'){
           echo  "if env.bb=='helloworld'"
         }
         echo "-------------------"
