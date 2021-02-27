@@ -5,11 +5,9 @@ node {
   def aa="true"
 
   echo "compile=$compile"
-  echo "env.init=$env.init"
   echo "\${aa}=${aa}"
   echo "aa=$aa"
-  echo "env.aa=$env.aa"
-  echo "env.aa.toBoolean()=$env.aa.toBoolean()"
+  echo "aa.toBoolean()=$aa.toBoolean()"
 
   sh "printenv"
   if(env.compile){
