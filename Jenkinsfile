@@ -75,7 +75,7 @@ node {
               remoteDirectorySDF: false,
               // removePrefix: 'target',
               // sourceFiles: '**/*.jar,docker*.*,**/*.sql')
-              sourceFiles: '**/docker*.yml,dist/**')
+              sourceFiles: '**/docker*.yml,dist/**,**/nginx/**')
           ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)
       ])
 
