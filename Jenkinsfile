@@ -1,6 +1,8 @@
 node {
     checkout scm
 
+    def ff="ff"
+
     withEnv([
         "compile=true",
         "init=true",
@@ -21,6 +23,7 @@ node {
         echo "bb=='helloworld'...${bb=='helloworld'}"
         echo "bb.trim()=='helloworld'...${bb.trim()=='helloworld'}"
         echo "cc==true...${cc==true?true:false}"
+        echo "ff=='ff'...${ff='ff'}"
         echo "-------------------"
         if(bb == 'helloworld'){
           echo  "if env.bb=='helloworld'"
