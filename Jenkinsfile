@@ -68,7 +68,7 @@ node {
               execCommand:
               '''
                   cd /data/dockerapp/spark-admin
-                  docker-compose up -d nginxz
+                  docker-compose up -d nginx
               ''',
               execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+',
               remoteDirectory: '/data/dockerapp/spark-admin',
