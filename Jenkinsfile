@@ -2,11 +2,14 @@ node {
   checkout scm
   def compile=true
   def init=true
+  def aa="true"
 
   echo "compile=$compile"
-  echo "init=$init.toBoolean()"
   echo "env.init=$env.init"
-  echo "env.init=$env.init.toBoolean()"
+  echo "\${aa}=${aa}"
+  echo "aa=$aa"
+  echo "env.aa=$env.aa"
+  echo "env.aa.toBoolean()=$env.aa.toBoolean()"
 
   sh "printenv"
   if(env.compile){
