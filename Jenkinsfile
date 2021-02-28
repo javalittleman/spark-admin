@@ -70,7 +70,7 @@ node {
               execCommand:
               '''
                   cd /data/dockerapp/spark-admin
-                  mv dist/* nginx/web/domain
+                  mv dist/* nginx/web
                   docker-compose up -d nginx
               ''',
               execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+',
